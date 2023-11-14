@@ -266,7 +266,13 @@
 </head>
 
 <body>
-
+	<script>
+		const userid = '[[${session.userid}]]';
+		if(userid=='') {
+			document.location.href='/';
+		}
+	</script>
+	
     <div class = "main">
         <img src="/images/logo.jpg" id="topBanner"><br>
         <h1>게시물 등록</h1>

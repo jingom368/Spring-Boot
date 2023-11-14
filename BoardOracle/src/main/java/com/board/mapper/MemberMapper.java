@@ -44,4 +44,10 @@ public interface MemberMapper {
 	// 주소 행 최대값 계산
 	public int addrTotalCount(String addrSearch);
 	
+	// 회원 탈퇴
+	public void deleteMember(String userid);
+	
+	// 회원 정보 수정
+	public void memberInfoUpdate(MemberDTO member);
+	
 }

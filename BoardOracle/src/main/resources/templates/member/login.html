@@ -79,7 +79,8 @@
    		// 로그인 처리
    		const loginCheck = async () => {
    			
-   			// const userid = document.querySelector('#userid');
+   			const userid = document.querySelector('#userid');
+   			
    			// const authkey = '12345';
    			
 				if(userid.value == '') {
@@ -177,10 +178,19 @@
    		const press = () => {
     		if(event.keyCode == 13) loginCheck(); // 13 = enter
     	}
+   		
+
    	</script>
    	
 </head>
+
 <body>
+	<script>
+        const userid = '[[${session.userid}]]';
+        if(userid.length !== 0){
+            document.location.href='/board/list?page=1';
+        }
+    </script>
 
 	<div class="main">
 	

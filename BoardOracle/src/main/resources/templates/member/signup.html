@@ -209,7 +209,8 @@
    					return false;
    				}
    				
-   				address.value = addr1.value + " " + addr2.value;
+   				
+   				// address.value = addr1.value + " " + addr2.value;
    				
    				if(telno.value == '') {
    					alert('전화번호를 입력하세요');
@@ -242,7 +243,8 @@
     	}
     		
 		const SignUp = async () => { 
-		   	const formData = new FormData(RegistryForm);
+			address.value = addr1.value + " " + addr2.value;
+			const formData = new FormData(RegistryForm);
 
 			await fetch('/member/signup', {
 				method: 'POST',

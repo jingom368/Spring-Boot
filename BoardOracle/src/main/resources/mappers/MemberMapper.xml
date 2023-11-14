@@ -73,4 +73,16 @@ where road like concat('%',#{addrSearch},'%') or building like concat('%',#{addr
 		or building like '%'||#{addrSearch}||'%'
 </select>
 
+<!-- 회원 탈퇴 -->
+<delete id="deleteMember" parameterType="string">
+	delete from tbl_member where userid=#{userid}
+</delete>
+
+<!-- 회원 정보 수정 -->
+<update id="memberInfoUpdate" parameterType="com.board.dto.MemberDTO">
+	update tbl_member set org_filename = #{org_filename}, stored_filename = #{stored_filename},
+	filesize = #{filesize}, gender=#{gender}, hobby=#{hobby}, job=#{job}, 
+	zipcode=#{zipcode}, telno=#{telno}, email=#{email}, description=#{description}
+	where userid = #{userid}
+</update>
 </mapper>

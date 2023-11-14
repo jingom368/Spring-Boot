@@ -86,6 +86,14 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.addrTotalCount(addrSearch);
 	}
 
-
+	// 회원 탈퇴
+	public void deleteMember(String userid) {
+		mapper.deleteMember(userid);
+	}
+	
+	// 회원 정보 수정
+	public void memberInfoUpdate(MemberDTO member) {
+		mapper.memberInfoUpdate(member);
+	}
 
 }

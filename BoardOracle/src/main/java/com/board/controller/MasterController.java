@@ -10,4 +10,9 @@ public class MasterController {
 	public void getSysManage() {
 		
 	}
+	
+	@GetMapping("/master/numberPost")
+	public void postNumberPost() {
+		
+	}
 }

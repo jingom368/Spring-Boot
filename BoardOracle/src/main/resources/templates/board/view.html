@@ -9,6 +9,12 @@
 </head>
 
 <body onload="startupPage()">
+	<script>
+		const userid = '[[${session.userid}]]';
+		if(userid=='') {
+			document.location.href='/';
+		}
+	</script>
 
     <div class="main">
         <img src="/images/logo.jpg" class="topBanner"><br>
