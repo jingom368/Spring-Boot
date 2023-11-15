@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.apache.commons.io.output.BrokenWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.MemberDTO;
-import com.board.service.BoardService;
 import com.board.service.MemberService;
 import com.board.util.Page;
 import com.board.util.Password;
@@ -35,9 +33,6 @@ public class MemberController {
 	MemberService service; // 멤버 변수
 	
 	@Autowired
-	BoardService boardService;
-	
-	@Autowired
 	private BCryptPasswordEncoder pwdEncoder;
 	
 	// 로그인 화면 보기
@@ -47,10 +42,19 @@ public class MemberController {
 	}
 	
 	// 로그인
-	@ResponseBody
 	@PostMapping("/member/login")
-	public String postlogin(MemberDTO member, HttpSession session, @RequestParam("autologin") String autologin) {
+	public void postLogin() {
 		
+	}
+	
+	// 로그인 
+	@ResponseBody
+	@PostMapping("/member/loginCheck")
+	public String postlogin(MemberDTO member, HttpSession session
+			// , @RequestParam("autologin") String autologin
+			) {
+		
+		/*
 		String authkey = "";
 
 		// 로그인 시 authkey 생성
@@ -78,6 +82,7 @@ public class MemberController {
 		System.out.println("userid = " + member.getUserid());
 		System.out.println("password = " + member.getPassword());
 		System.out.println("DB password = " + service.memberInfo("jingom368"));
+		*/
 		
 		// 아이디 존재 여부 확인
 		if(service.idCheck(member.getUserid()) == 0) {
@@ -92,7 +97,11 @@ public class MemberController {
 			// return "redirect:/board/list?page=1";
 			return "{\"message\":\"PASSWORD_NOT_FOUND\"}";
 		
-		} else {
+		} 
+		
+		return "{\"message\":\"GOOD\"}";
+		/*
+			else {
 			// 제대로 된 아이디와 패스워드가 입력되었을 때 
 			
 			// 마지막 로그인 날짜 등록
@@ -111,7 +120,7 @@ public class MemberController {
 			// return "redirect:/";
 			return "{\"message\":\"GOOD\",\"authkey\":\"" + member.getAuthkey() + "\"}";
 		}
-
+		*/
 	}
 	
 	// 로그인 화면 보기
@@ -177,7 +186,7 @@ public class MemberController {
 	
 	// 로그아웃
 	@GetMapping("/member/logout")
-	public void getLogout(HttpSession session, Model model) {
+	public String getLogout(HttpSession session, Model model) {
 		String userid = (String)session.getAttribute("userid");
 		String username = (String)session.getAttribute("username");
 		
@@ -193,7 +202,9 @@ public class MemberController {
 		
 		model.addAttribute("userid", userid);
 		model.addAttribute("username", username);
-		session.invalidate(); // 모든 세션 종료 --> 로그아웃...
+		// session.invalidate(); // 모든 세션 종료 --> 로그아웃...
+		
+		return "redirect:/";
 	}
 	
 	// 패스워드 변경 후 세션 종료
@@ -279,17 +290,16 @@ public class MemberController {
 	}
 	
 	// 회원 정보 보기
-	@GetMapping("/member/memberInfo")
+	@GetMapping("/board/memberInfo")
 	public void getmemberInfo(HttpSession session, Model model) throws Exception {
 		String userid = (String)session.getAttribute("userid");
 		model.addAttribute("memberInfo", service.memberInfo(userid));
 	}
 	
 	// 회원 기본 정보 변경
-	@GetMapping("/member/memberInfoModify")
-	public void getMemberInfoModify(HttpSession session, Model model) {
-		String userid = (String)session.getAttribute("userid");
-		model.addAttribute("memberInfo", service.memberInfo(userid));
+	@GetMapping("/board/memberInfoModify")
+	public void getMemberInfoModify() {
+		
 	}
 	
 	// 회원 패스워드 변경
@@ -321,63 +331,5 @@ public class MemberController {
 		service.memberPasswordModify(member);
 		
 		return "{\"message\":\"GOOD\"}";
-	}
-	
-	// 회원 탈퇴
-	@GetMapping("/member/memberWithdraw")
-	public void getMemberWithdraw(HttpSession session, Model model) {
-		String userid = (String)session.getAttribute("userid");
-		String username = (String)session.getAttribute("username");
-		
-		model.addAttribute("userid", userid);
-		model.addAttribute("username", username);
-		session.invalidate(); // 모든 세션 종료 --> 로그아웃... 
-		// 쿠키 삭제 추가
-		
-		service.deleteMember(userid);
-		System.out.println("userid : " + userid);
-	}
-	
-	// 기본 정보 수정
-	@ResponseBody
-	@PostMapping("/member/memberInfoModify")
-	public Map<String, String> postMemberInfoUpdate(HttpSession session, MemberDTO member, @RequestParam("fileUpload") MultipartFile multipartFile) throws Exception {
-
-			System.out.println("signup => good");
-			String path = "c:\\Repository\\profile\\";
-			File targetFile;
-			
-			// 중요한 것!
-			if(!multipartFile.isEmpty()) {
-				
-				String org_filename = multipartFile.getOriginalFilename();
-				String org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));
-				String stored_filename = UUID.randomUUID().toString().replaceAll("-","") + org_fileExtension;
-				
-				try {
-					targetFile = new File(path + stored_filename);
-					multipartFile.transferTo(targetFile);
-					
-					member.setOrg_filename(org_filename);
-					member.setStored_filename(stored_filename);
-					member.setFilesize(multipartFile.getSize());
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-				String userid = (String)session.getAttribute("userid");
-				String username = (String)session.getAttribute("username");
-				member.setUserid(userid);
-				service.memberInfoUpdate(member);
-				// return "redirect:/board/list?page=1";
-				// return "{\"message\":\"GOOD\"}";
-				
-				Map<String,String> data = new HashMap<>(); data.put("message", "GOOD");
-				data.put("username", URLEncoder.encode(username, "UTF-8"));
-				 
-				return data;
-				
-				// return "{\"message\":\"GOOD\",\"username\":\"" + URLEncoder.encode(member.getUsername(), "UTF-8") + "\"}";
 	}
 }

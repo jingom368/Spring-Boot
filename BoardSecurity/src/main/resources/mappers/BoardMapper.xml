@@ -5,7 +5,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.BoardMapper">
 
-<!-- o 게시물 목록 보기 -->
+<!-- 게시물 목록 보기 -->
 <select id="list" parameterType="HashMap" resultType="com.board.dto.BoardDTO">
 select seq,seqno,writer,title,regdate,hitno from
 		(select row_number() over(order by seqno desc) as seq,seqno,writer,title,
@@ -29,7 +29,7 @@ select seq,seqno,writer,title,regdate,hitno from
 		from tbl_board where seqno=#{seqno}
 </select>
 
-<!-- o 게시물 내용 이전 보기 -->
+<!-- 게시물 내용 이전 보기 -->
 <select id="pre_seqno" parameterType="HashMap" resultType="int">
     <![CDATA[
 		select nvl(max(seqno), 0) as pre_seqno from tbl_board where seqno < #{seqno}
@@ -39,7 +39,7 @@ select seq,seqno,writer,title,regdate,hitno from
 	]]>
 </select>
 
-<!-- o 게시물 내용 다음 보기 -->
+<!-- 게시물 내용 다음 보기 -->
 <select id="next_seqno" parameterType="HashMap" resultType="int">
 	<![CDATA[
 		select nvl(min(seqno), 0) as next_seqno from tbl_board where seqno > #{seqno}
@@ -49,12 +49,12 @@ select seq,seqno,writer,title,regdate,hitno from
 	]]>
 </select>
 
-<!-- o 게시물 조회수 증가 -->
+<!-- 게시물 조회수 증가 -->
 <update id="hitno" parameterType="int">
 	update tbl_board set hitno = (select nvl(hitno, 0) from tbl_board where seqno = #{seqno}) + 1 where seqno = #{seqno}
 </update>
 
-<!-- o 게시물 번호 구하기(시퀀스의 nextval을 사용) -->
+<!-- 게시물 번호 구하기(시퀀스의 nextval을 사용) -->
 <select id="getSeqnoWithNextval" resultType="int">
 	select tbl_board_seq.nextval as seqno from dual
 </select>
@@ -71,12 +71,12 @@ select seq,seqno,writer,title,regdate,hitno from
 	 	values (tbl_file_seq.nextval,#{seqno},#{userid},#{org_filename},#{stored_filename},#{filesize},#{checkfile})
 </insert>
 
-<!-- o 첨부 파일 목록 보기 -->
+<!-- 첨부 파일 목록 보기 -->
 <select id="fileInfoView" parameterType="int" resultType="com.board.dto.FileDTO">
 	select * from tbl_file where seqno = #{seqno} and checkfile= 'O'
 </select>
 
-<!-- o 다운로드를 위한 파일 정보 가져 오기 -->
+<!-- 다운로드를 위한 파일 정보 가져 오기 -->
 <select id="fileInfo" parameterType="int" resultType="com.board.dto.FileDTO">
 	select * from tbl_file where fileseqno= #{fileseqno}
 </select>
@@ -106,7 +106,7 @@ select seq,seqno,writer,title,regdate,hitno from
 	update tbl_board set likecnt=#{likecnt}, dislikecnt=#{dislikecnt} where seqno=#{seqno}
 </update>
 
-<!-- o 좋아요/싫어요 등록 여부 확인 -->
+<!-- 좋아요/싫어요 등록 여부 확인 -->
 <select id="likeCheckView" parameterType="com.board.dto.LikeDTO" resultType="com.board.dto.LikeDTO">
 	select * from tbl_like where seqno = #{seqno} and userid = #{userid}
 </select>
