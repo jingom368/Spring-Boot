@@ -5,5 +5,32 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.MasterMapper">
 
+<!-- 유저 게시물/댓글 resultMap 정의 -->
+<resultMap id="CountResultMap_board" type="HashMap">
+    <id property="userid" column="userid" />
+    <result property="username" column="username" />
+    <result property="boardcount" column="board_count" />
+</resultMap>
+
+<!-- 유저마다 게시한 게시물 갯수 -->
+<select id="boardCountGroupbyUserid" resultMap="CountResultMap_board">
+	select m.userid, m.username, count(b.seqno) as board_count
+	from tbl_member m left join tbl_board b ON m.userid = b.userid 
+	group by m.userid, m.username order by board_count DESC
+</select>
+
+<!-- 유저 게시물/댓글 resultMap 정의 -->
+<resultMap id="CountResultMap_reply" type="HashMap">
+    <id property="userid" column="userid" />
+    <result property="username" column="username" />
+    <result property="replycount" column="reply_count" />
+</resultMap>
+
+<select id="replyCountGroupbyUserid" resultMap="CountResultMap_reply">
+<!-- 유저마다 게시한 댓글 갯수 -->
+select m.userid, m.username, count(r.replyseqno) as reply_count
+	from tbl_member m left join tbl_reply r ON m.userid = r.userid 
+	group by m.userid, m.username order by reply_count DESC
+</select>
 
 </mapper>

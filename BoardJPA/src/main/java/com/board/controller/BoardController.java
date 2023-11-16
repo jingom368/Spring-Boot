@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,8 +30,9 @@ import com.board.dto.BoardDTO;
 import com.board.dto.FileDTO;
 import com.board.dto.LikeDTO;
 import com.board.dto.ReplyDTO;
+import com.board.entity.BoardEntity;
 import com.board.service.BoardService;
-import com.board.util.Page;
+import com.board.util.PageUtil;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,18 +61,23 @@ public class BoardController {
 			@RequestParam(name="keyword", defaultValue="", required=false) String keyword) throws Exception {
 		
 		int postNum = 5; // 한 화면에 보여지는 게시물 행의 갯수
-		int startPoint = (pageNum-1)*postNum + 1; 
-		int endPoint = pageNum*postNum;
 		int pageListCount = 5; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
-		int totalCount = service.getTotalCount(keyword); // 전체 게시물 갯수
+		
+		PageUtil page = new PageUtil();
+		Page<BoardEntity> list = service.list(pageNum, postNum, keyword);
+		int totalCount = (int)list.getTotalElements(); // 
+		
+		// int startPoint = (pageNum-1)*postNum + 1; 
+		// int endPoint = pageNum*postNum;
+		// int totalCount = service.getTotalCount(keyword); // 전체 게시물 갯수
 		
 		System.out.println("totalCount = " + totalCount);
 		
-		Page page = new Page();
+		// PageUtil page = new PageUtil();
 		// String pageList = page.getPageList(pageNum, postNum, pageListCount, totalCount, keyword);		
 		
-		model.addAttribute("list", service.list(startPoint, endPoint, keyword));
-		model.addAttribute("totalElement", service.getTotalCount(keyword));
+		model.addAttribute("list", service.list(pageNum, postNum, keyword));
+		model.addAttribute("totalElement", totalCount);
 		model.addAttribute("postNum", postNum);
 		model.addAttribute("page", pageNum);
 		model.addAttribute("keyword", keyword);
@@ -89,7 +96,7 @@ public class BoardController {
 	@PostMapping("/board/write")
 	public String postWrite(BoardDTO board) throws Exception {
 		
-		int seqno = service.getSeqnoWithNextval();
+		Long seqno = service.getSeqnoWithNextval();
 		board.setSeqno(seqno);
 		service.write(board);
 		// return "redirect:/board/list?page=1";
@@ -102,9 +109,9 @@ public class BoardController {
 	@PostMapping("/board/fileUpload")
 	public String postFileUpload(BoardDTO board,@RequestParam("kind") String kind,
 			@RequestParam("sendToFileList") List<MultipartFile> multipartFile,
-			@RequestParam(name="deleteFileList",required=false) int[] deleteFileList) throws Exception {
+			@RequestParam(name="deleteFileList",required=false) Long[] deleteFileList) throws Exception {
 		
-		int seqno = 0;
+		Long seqno = 0L;
 		
 		String path = "c:\\Repository\\file\\";
 		if(kind.equals("I")) { // 게시물 등록
@@ -146,7 +153,7 @@ public class BoardController {
 					fileInfo.put("org_filename",org_filename);
 					fileInfo.put("stored_filename",stored_filename);
 					fileInfo.put("filesize",filesize);
-					fileInfo.put("userid", board.getUserid());
+					fileInfo.put("userid", board.getEmail());
 					fileInfo.put("checkfile", "O"); // O : 파일 존재, X : 파일 삭제
 					fileInfo.put("kind", kind);
 					

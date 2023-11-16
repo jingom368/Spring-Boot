@@ -1,7 +1,5 @@
 package com.board.dto;
 
-import com.board.entity.AddressEntity;
-import com.board.entity.BoardEntity;
 import com.board.entity.FileEntity;
 
 import lombok.AllArgsConstructor;

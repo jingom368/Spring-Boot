@@ -132,7 +132,7 @@ select seq,seqno,writer,title,regdate,hitno from
 <!-- 댓글 등록 -->
 <insert id="replyRegistry" parameterType="com.board.dto.ReplyDTO">
 	insert into tbl_reply (replyseqno,seqno,replywriter,replycontent,userid,replyregdate) values 
-		(tbl_reply_seq.nextval,#{seqno},#{replywriter},#{replycontent},#{userid},#{replyregdate})
+		(tbl_reply_seq.nextval,#{seqno},#{replywriter},#{replycontent},#{userid},sysdate)
 </insert>
 
 <!-- 댓글 수정 -->

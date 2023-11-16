@@ -8,12 +8,13 @@
 
 </head>
 
-<body onload="startupPage()">
+<body>
 	<script>
 		const userid = '[[${session.userid}]]';
 		if(userid=='') {
 			document.location.href='/';
 		}
+		window.onload="startupPage()";
 	</script>
 
     <div class="main">
@@ -209,7 +210,7 @@
     		const data = {
    				replywriter: replywriter.value,
    				replycontent: replycontent.value,
-   				userid: userid.value,
+   				userid: '[[${session.userid}]]',
    				seqno: seqno.value
     		}
     		

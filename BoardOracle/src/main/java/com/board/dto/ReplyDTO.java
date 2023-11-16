@@ -1,6 +1,7 @@
 package com.board.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ public class ReplyDTO {
 	private int seqno;
 	private String replywriter;
 	private String replycontent;
-	private String replyregdate;
+	private LocalDate replyregdate;
 	private String userid;
 	
 }

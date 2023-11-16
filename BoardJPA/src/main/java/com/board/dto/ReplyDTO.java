@@ -38,16 +38,16 @@ public class ReplyDTO {
     } 
 
     // DTO -> Entity로 이동 (Builder 패턴 사용)
-    public ReplyEntity toDtoEntity(ReplyDTO reply) {
-        ReplyEntity replyEntity = ReplyEntity.builder()
-							                .replyseqno(reply.getReplyseqno())
-							                .seqno(reply.getSeqno())
-							                .replywriter(reply.getReplywriter())
-							                .replycontent(reply.getReplycontent())
-							                .replyregdate(reply.getReplyregdate())
-							                .email(reply.getEmail())
-							                .build();
-
-        return replyEntity;
-    }
+    // public ReplyEntity toDtoEntity(ReplyDTO reply) {
+    //        ReplyEntity replyEntity = ReplyEntity.builder()
+	// 						                	.replyseqno(reply.getReplyseqno())
+	// 						                	.seqno(reply.getSeqno())
+	// 						                	.replywriter(reply.getReplywriter())
+	// 						                	.replycontent(reply.getReplycontent())
+	// 						                	.replyregdate(reply.getReplyregdate())
+	// 						                	.email(reply.getEmail())
+	// 						                	.build();
+    // 
+    //     return replyEntity;
+    // }
 }

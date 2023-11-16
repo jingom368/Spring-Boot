@@ -1,6 +1,6 @@
 package com.board.util;
 
-public class Page {
+public class PageUtil {
 	
 	public String getPageList(int pageNum, int postNum, int pageListCount, int totalCount, String keyword) {
 		

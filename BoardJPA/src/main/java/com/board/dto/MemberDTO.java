@@ -1,10 +1,7 @@
 package com.board.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.board.entity.AddressEntity;
-import com.board.entity.LikeEntity;
 import com.board.entity.MemberEntity;
 
 import lombok.AllArgsConstructor;
@@ -92,7 +89,7 @@ public class MemberDTO {
 								                .stored_filename(member.getStored_filename())
 								                .filesize(member.getFilesize())
 								                .authkey(member.getAuthkey())
-								                .fromSocial(member.getFromSocialString())
+								                .fromSocial(member.getFromSocial())
 								                .build();
         return memberEntity;
     }

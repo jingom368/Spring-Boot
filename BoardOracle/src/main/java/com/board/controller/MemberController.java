@@ -323,6 +323,12 @@ public class MemberController {
 		return "{\"message\":\"GOOD\"}";
 	}
 	
+	// 회원 탈퇴 확인
+	@GetMapping("/member/memberWithdrawCheck")
+	public void getMemberWithdrawCheck() {
+		
+	}
+
 	// 회원 탈퇴
 	@GetMapping("/member/memberWithdraw")
 	public void getMemberWithdraw(HttpSession session, Model model) {
@@ -334,7 +340,7 @@ public class MemberController {
 		session.invalidate(); // 모든 세션 종료 --> 로그아웃... 
 		// 쿠키 삭제 추가
 		
-		service.deleteMember(userid);
+		// service.deleteMember(userid);
 		System.out.println("userid : " + userid);
 	}
 	

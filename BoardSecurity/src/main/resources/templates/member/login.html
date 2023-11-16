@@ -91,6 +91,12 @@
    				}
    			}
    			
+   			// 확인
+   			const session_userid = '[[${session.userid}]]'
+   			if(getCookie('remember-me') !== '' && session_userid !== '') {
+   				document.location.href='/board/list?page=1'
+   			}
+   			
    			let userid = getCookie('userid');
    			let password = getCookie('password');
    			let authkey = getCookie('authkey');

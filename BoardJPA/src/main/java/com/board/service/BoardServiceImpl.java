@@ -129,6 +129,14 @@ class BoardServiceImpl implements BoardService {
 		// return mapper.fileInfoView(seqno);
 		return fileRepository.findBySeqnoAndCheckfile(seqno, "O");
 	}
+	
+	// 첨부 파일 목록 보기
+//	@Override
+//	public List<FileDTO> fileInfoView(Long seqno) throws Exception{
+//		List<FileDTO> fileDTOs = new ArrayList<>();
+//		fileRepository.findBySeqnoAndCheckfile(seqno, "O").stream().forEach(list -> fileDTOs.add(new FileDTO(list)));
+//		return fileDTOs;
+//	}
 
 	// 게시물 삭제 시 첨부 파일 삭제를 위한 checkfile 정보 변경
 	@Override

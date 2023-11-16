@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.board.dto.MemberDTO;
 import com.board.service.MemberService;
-import com.board.util.Page;
+import com.board.util.PageUtil;
 import com.board.util.Password;
 
 @Controller
@@ -283,7 +283,7 @@ public class MemberController {
 		int pageListCount = 5; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
 		int totalCount = service.addrTotalCount(addrSearch); // 전체 게시물 갯수
 		
-		Page page = new Page();
+		PageUtil page = new PageUtil();
 		
 		model.addAttribute("list", service.addrSearch(startPoint, endPoint, addrSearch));
 		model.addAttribute("pageList", page.getPageAddress(pageNum, postNum, pageListCount, totalCount, addrSearch));

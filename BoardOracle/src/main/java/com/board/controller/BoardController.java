@@ -356,10 +356,15 @@ public class BoardController {
 	@PostMapping("/board/reply")
 	public List<ReplyDTO> postReply(@RequestBody ReplyDTO reply, @RequestParam("option") String option) throws Exception {
 		
-		LocalDateTime now = LocalDateTime.now();
-		String regdate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		reply.setReplyregdate(regdate);
-		System.out.println("replycontent : "+reply.getReplyregdate());
+		// LocalDateTime now = LocalDateTime.now();
+		// LocatDate regdate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		// reply.setReplyregdate(regdate);
+		// System.out.println("reply : " + reply.getReplyregdate());
+		System.out.println("replycontent : " + reply.getReplycontent());
+		System.out.println("replyseqno : " + reply.getReplyseqno());
+		System.out.println("replywriter : " + reply.getReplywriter());
+		System.out.println("seqno : " + reply.getSeqno());
+		System.out.println("userid : " + reply.getUserid());
 		
 		switch(option) {
 		

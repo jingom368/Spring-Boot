@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>게시물 수</title>
+<title>댓글 수</title>
 </head>
 <body>
    <table border="1">
@@ -10,14 +10,14 @@
             <tr>
                 <th>userid</th>
                 <th>username</th>
-                <th>Board Count</th>
+                <th>Reply Count</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="board : ${boardCount}">
-                <td th:text="${board.userid}"></td>
-                <td th:text="${board.username}"></td>
-                <td th:text="${board.boardcount}"></td>
+            <tr th:each="reply : ${replyCount}">
+                <td th:text="${reply.userid}"></td>
+                <td th:text="${reply.username}"></td>
+                <td th:text="${reply.replycount}"></td>
             </tr>
         </tbody>
     </table>
