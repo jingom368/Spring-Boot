@@ -30,7 +30,9 @@ import com.board.dto.BoardDTO;
 import com.board.dto.FileDTO;
 import com.board.dto.LikeDTO;
 import com.board.dto.ReplyDTO;
+import com.board.dto.ReplyInterface;
 import com.board.entity.BoardEntity;
+import com.board.entity.LikeEntity;
 import com.board.service.BoardService;
 import com.board.util.PageUtil;
 
@@ -135,7 +137,7 @@ public class BoardController {
 		if(!multipartFile.isEmpty()) {
 			
 			File targetFile = null;
-			Map<String, Object> fileInfo = null;
+			FileDTO fileInfo = null;
 			
 			for(MultipartFile mpr:multipartFile) {
 				String org_filename = mpr.getOriginalFilename();
@@ -148,14 +150,22 @@ public class BoardController {
 					targetFile = new File(path + stored_filename);
 					mpr.transferTo(targetFile);
 					
-					fileInfo = new HashMap<>();
-					fileInfo.put("seqno", seqno);
-					fileInfo.put("org_filename",org_filename);
-					fileInfo.put("stored_filename",stored_filename);
-					fileInfo.put("filesize",filesize);
-					fileInfo.put("userid", board.getEmail());
-					fileInfo.put("checkfile", "O"); // O : 파일 존재, X : 파일 삭제
-					fileInfo.put("kind", kind);
+					fileInfo = FileDTO.builder()
+										.seqno(seqno)
+										.org_filename(org_filename)
+										.stored_filename(stored_filename)
+										.filesize(filesize)
+										.email(board.getEmail().getEmail())
+										.checkfile("O")
+										.build();
+
+//					fileInfo.setSeqno(seqno);
+//					fileInfo.setOrg_filename(org_filename);
+//					fileInfo.setStored_filename(stored_filename);
+//					fileInfo.setFilesize(filesize);
+//					fileInfo.setEmail(email);
+//					fileInfo.setCheckfile("O") // O : 파일 존재, X : 파일 삭제
+//					fileInfo.("kind", kind);
 					
 					service.fileInfoRegistry(fileInfo);
 					
@@ -172,7 +182,7 @@ public class BoardController {
 	
 	//파일 다운로드
 	@GetMapping("/board/fileDownload")
-	public void fileDownload(@RequestParam("fileseqno") int fileseqno, HttpServletResponse rs) throws Exception {
+	public void fileDownload(@RequestParam("fileseqno") Long fileseqno, HttpServletResponse rs) throws Exception {
 		
 		String path = "c:\\Repository\\file\\"; 
 		
@@ -196,16 +206,18 @@ public class BoardController {
 	
 	// 게시물 내용 보기
 	@GetMapping("/board/view")
-	public void getView(@RequestParam("seqno") int seqno, @RequestParam("page") int pageNum,
+	public void getView(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum,
 			@RequestParam(name="keyword", defaultValue="", required=false) String keyword,
 			Model model, HttpSession session) throws Exception  {
 		
 		// 좋아요/싫어요 처리
-		LikeDTO likeDTO = new LikeDTO();
-		String session_userid = (String)session.getAttribute("userid");
-		likeDTO.setSeqno(seqno);
-		likeDTO.setUserid(session_userid);
-		LikeDTO likeCheckView = service.likeCheckView(likeDTO);
+		// LikeDTO likeDTO = new LikeDTO();
+		String session_email = (String)session.getAttribute("email");
+		// likeDTO.setSeqno(seqno);
+		// likeDTO.setEmail(email);
+		// findbyId를 활용해서 바꿔주는 방법은 있지만 그렇게 하지는 않음
+		// LikeDTO likeCheckView = service.likeCheckView(likeDTO);
+		LikeEntity likeCheckView = service.likeCheckView(seqno,session_email);
 		
 		// 초기에 좋아요/싫어요 등록이 안되어져 있을 경우
 		if(likeCheckView == null) {
@@ -217,17 +229,18 @@ public class BoardController {
 		}
 		
 		model.addAttribute("view", service.view(seqno));
+		model.addAttribute("viewEmail", service.view(seqno).getEmail().getEmail());		
 		model.addAttribute("page", pageNum);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("pre_seqno", service.pre_seqno(seqno,keyword));
 		model.addAttribute("next_seqno", service.next_seqno(seqno,keyword));
 		model.addAttribute("fileInfoView", service.fileInfoView(seqno));
 		
-		// 세션 userid 값 가져 오기
-		String sessionUserid = (String)session.getAttribute("userid");
+		// 세션 email 값 가져 오기
+		String sessionEmail = (String)session.getAttribute("email");
 		
 		// 조회수 증가
-		if(!sessionUserid.equals(service.view(seqno).getUserid())) {
+		if(!sessionEmail.equals(service.view(seqno).getEmail().getEmail())) {
 			service.hitno(seqno);
 		}
 	}
@@ -239,8 +252,10 @@ public class BoardController {
 		
 		System.out.println("hello1");
 		
-		int seqno = (int)likeCheckData.get("seqno");
-		String userid = (String)likeCheckData.get("userid");
+		int seq = (int)likeCheckData.get("seqno");
+		Long seqLong = (long) seq;
+		// Long seqno = (Long)likeCheckData.get("seqno");
+		String email = (String)likeCheckData.get("email");
 		String mylikecheck = (String)likeCheckData.get("mylikecheck");
 		String mydislikecheck = (String)likeCheckData.get("mydislikecheck");
 		int checkCnt= (int)likeCheckData.get("checkCnt");
@@ -266,25 +281,28 @@ public class BoardController {
 		likeCheckData.put("dislikedate", dislikeDate);
 		
 		LikeDTO likeData = new LikeDTO();
-		likeData.setSeqno(seqno);
-		likeData.setUserid(userid);
+		/*
+		likeData.setSeqno(seqno); 
+		likeData.setEmail(email);
 		likeData.setMylikecheck(mylikecheck);
 		likeData.setMydislikecheck(mydislikecheck);
 		likeData.setLikedate(likeDate);
 		likeData.setDislikedate(dislikeDate);
+		*/
+		
 		System.out.println("mylikecheck3 : " + mylikecheck);
 		System.out.println("mydislikecheck3 : " + mydislikecheck);
 		System.out.println("likeData.getMylikecheck : " + likeData.getMylikecheck());
 		System.out.println("likeData.getMydislikecheck : " + likeData.getMydislikecheck());
 		
 		// tbl_like 테이블 입력/수정
-		LikeDTO likeCheckView = service.likeCheckView(likeData);
+		LikeEntity likeCheckView = service.likeCheckView(seqLong,email);
 		System.out.println("likeCheckView :" + likeCheckView);
-		if (likeCheckView == null) service.likeCheckRegistry(likeData);
-			else service.likeCheckUpdate(likeData);
+		if (likeCheckView == null) service.likeCheckRegistry(seqLong, email, mylikecheck, mydislikecheck, likeDate, dislikeDate);
+			else service.likeCheckUpdate(seqLong, email, mylikecheck, mydislikecheck, likeDate, dislikeDate);
 		
-		int likeCnt = service.view(seqno).getLikecnt();
-		int dislikeCnt = service.view(seqno).getDislikecnt();
+		int likeCnt = service.view(seqLong).getLikecnt();
+		int dislikeCnt = service.view(seqLong).getDislikecnt();
 		
 		System.out.println("likeCnt : " + likeCnt);
 		System.out.println("dislikeCnt : " + dislikeCnt);
@@ -304,7 +322,7 @@ public class BoardController {
 			System.out.println("dislikeCnt : " + dislikeCnt);
 			
 			BoardDTO board = new BoardDTO();
-			board.setSeqno(seqno);
+			board.setSeqno(seqLong);
 			board.setLikecnt(likeCnt);
 			board.setDislikecnt(dislikeCnt);
 			service.boardlikeUpdate(board);
@@ -317,7 +335,7 @@ public class BoardController {
 	
 	// 게시물 수정 화면 보기
 	@GetMapping("/board/modify")
-	public void getModify(@RequestParam("seqno") int seqno, @RequestParam("page") int pageNum, 
+	public void getModify(@RequestParam("seqno") Long seqno, @RequestParam("page") int pageNum, 
 			@RequestParam(name="keyword", defaultValue="", required=false) String keyword, Model model) throws Exception {
 		model.addAttribute("page", pageNum);
 		model.addAttribute("keyword", keyword);
@@ -331,10 +349,10 @@ public class BoardController {
 	@PostMapping("/board/modify")
 	public String postModify(BoardDTO board, @RequestParam("page") int pageNum, 
 			@RequestParam(name="keyword", defaultValue="", required=false) String keyword,
-			@RequestParam(name="deleteFileList",required=false) int[] deleteFileList
+			@RequestParam(name="deleteFileList",required=false) Long[] deleteFileList
 			) throws Exception {
 		
-		
+		//?
 		service.modify(board);
 		
 		if(deleteFileList != null) {
@@ -350,7 +368,7 @@ public class BoardController {
 	// 게시물 삭제 하기
 	@Transactional
 	@GetMapping("/board/delete")
-	public String getDelete(@RequestParam("seqno") int seqno) throws Exception {
+	public String getDelete(@RequestParam("seqno") Long seqno) throws Exception {
 		// transaction 시작
 		service.fileInfoUpdate(seqno); // tbl_file 테이블의 checkfile column 값을 'X'로 변환
 		service.delete(seqno); // 게시물 행 삭제
@@ -361,11 +379,11 @@ public class BoardController {
 	// 댓글 처리
 	@ResponseBody
 	@PostMapping("/board/reply")
-	public List<ReplyDTO> postReply(@RequestBody ReplyDTO reply, @RequestParam("option") String option) throws Exception {
+	public List<ReplyInterface> postReply(ReplyInterface reply, @RequestParam("option") String option) throws Exception {
 		
 		LocalDateTime now = LocalDateTime.now();
-		String regdate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		reply.setReplyregdate(regdate);
+		// String regdate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		// reply.setReplyregdate(regdate);
 		System.out.println("replycontent : "+reply.getReplyregdate());
 		
 		switch(option) {

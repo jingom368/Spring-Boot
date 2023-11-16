@@ -3,6 +3,7 @@ package com.board.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,6 +74,11 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
 		
 		// 구글 회원 계정으로 로그인 한 회원의 경우, 사이트 운영에 필요한 최소한의 정보를
 		// 가공해서 tbl_member에 입력해야 함.
+		
+		Optional<MemberEntity> result = memberRepository.findById(email);
+		if(result.isPresent()) {
+			return result.get();
+		}
 		
 		MemberEntity member = MemberEntity.builder()
 											.email(email)

@@ -80,7 +80,7 @@ public interface BoardService {
 	public List<ReplyInterface> replyView(ReplyInterface reply) throws Exception;
 
 	// 댓글 등록
-	public void replyRegistry(ReplyDTO reply) throws Exception;
+	public void replyRegistry(ReplyInterface reply) throws Exception;
 
 	// 댓글 수정
 	public void replyUpdate(ReplyInterface reply) throws Exception;

@@ -14,7 +14,7 @@
 				<br><br>
 				<input type="file" name="fileUpload" id="imageFile" style="display:none">
 				<div class="imageZone" id="imageZone">클릭 후 탐색창에서 사진을 <br>선택해 주세요</div>
-				<input type="text" class="input_field" id="userid" name="userid" placeholder="여기에 아이디를 입력해 주세요." onchange="idCheck()">
+				<input type="text" class="input_field" id="email" name="email" placeholder="여기에 이메일을 입력해 주세요." onchange="idCheck()">
 				<span id="idCheckNotice"></span>
 				<input type="text" class="input_field" id="username" name="username" placeholder="여기에 이름을 입력해 주세요.">
 				<input type="password" class="input_field" id="password" name="password" placeholder="여기에 패스워드를 입력해 주세요.">
@@ -44,7 +44,7 @@
 				<input type="text" id="addr2" class="input_field" name="addr2" placeholder="상세주소를 입력하세요.">
 				<input type="hidden" id="address" name="address">
 				<input type="text" id="telno" class="input_field" name="telno" placeholder="전화번호를 입력하세요.">
-				<input type="text" id="email" class="input_field" name="email" placeholder="이메일 주소를 입력하세요.">
+				<input type="text" id="nickname" class="input_field" name="nickname" placeholder="별명을 입력하세요.">
 				<p style="color:red">일반 사용자 권한으로 등록합니다.</p><br>
 				<textarea class="input_content" id="description" cols="100" rows="500" name="description" placeholder="자기 소개를 입력해 주세요">
 				</textarea><br>
@@ -114,10 +114,10 @@
    					return false;
    				}
    				
-   				// userid.value.trim().replace(/\ /,""); // 실무에는 활용
-   				if(userid.value == '' || userid.value == undefined || userid.value == null) {
+   				// email.value.trim().replace(/\ /,""); // 실무에는 활용
+   				if(email.value == '' || email.value == undefined || email.value == null) {
    					alert('아이디를 입력하세요');
-   					userid.focus();
+   					email.focus();
    					return false; 
    				}
    				if(username.value == '') {
@@ -220,8 +220,8 @@
    				const afterTelno = beforeTelno.replace(/\-/ig,"").replace(/\ /ig,"").trim(); // -가 있으면 ""로 대체, 공백이 있으면 ""로 대체, 문자열 좌우의 공백 없애기.
    				telno.value = afterTelno;
    				
-   				if(email.value == '') {
- 	   				alert('이메일 주소를 입력하세요');
+   				if(nickname.value == '') {
+ 	   				alert('별명을 입력하세요');
   	   				email.focus();
   	   				return false
   	   			}
@@ -267,7 +267,7 @@
 		const hobbyValue = [...document.querySelectorAll('input[name="hobby"]:checked')].map(input => input.value);
 		const job = document.querySelector('select[name=job] option:checked');
 		address.value = addr1.value + " " + addr2.value;
-		formData.append("userid", userid.value);
+		formData.append("email", email.value);
 		formData.append("username", username.value);
 		formData.append("password", password.value);
 		formData.append("job", job.value);
@@ -327,11 +327,11 @@
 		}
 		
 		const idCheck = async () => { // function async idCheck()			
-			const userid = document.querySelector('#userid');
+			const email = document.querySelector('#email');
 
 			await fetch('/member/idCheck', {
 				method: "POST",
-				body: userid.value
+				body: email.value
 			}).then((response) => response.text())
 				.then((data) => { 
 					console.log(data)
@@ -341,8 +341,8 @@
 					}
 					else {
 						idCheckNotice.innerHTML = "이미 사용중인 아이디입니다.";	
-						userid.value = '';
-						userid.focus();
+						email.value = '';
+						email.focus();
 					}
 				});
 		}

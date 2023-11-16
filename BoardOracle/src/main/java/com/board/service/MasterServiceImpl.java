@@ -26,4 +26,16 @@ public class MasterServiceImpl implements MasterService {
 	public List<HashMap<String, Object>> replyCountGroupbyUserid() throws Exception {
 		return mapper.replyCountGroupbyUserid();
 	}
+	
+	// 유저 수
+	public String memberCount() throws Exception {
+		return mapper.memberCount();
+	}
+	
+	// 파일 리스트
+	@Override
+	public List<HashMap<String, Object>> fileList() throws Exception {
+		return mapper.fileList();
+	}
+	
 }

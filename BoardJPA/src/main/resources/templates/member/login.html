@@ -33,7 +33,7 @@
         border-radius: 30px;
         margin:auto;
     }
-    .userid, .password {
+    .email, .password {
         width:80%;
         height:25px;
         border: none;
@@ -78,7 +78,7 @@
    				console.log('cookies = ' + cookies);
    				for(let i=0; i<cookies.length; i++) {
    					if(cookies[i][0] == name) { 
-   						// name: userid, getItem = ['jingom368']
+   						// name: email, getItem = ['jingom368']
    						// name: password, getItem = ['V1RGa05HVkhSblZVV0doUFZrZHpPUT09']
 						getItem.push(cookies[i][1]);
 						break;
@@ -91,17 +91,23 @@
    				}
    			}
    			
-   			let userid = getCookie('userid');
+   			// 확인
+   			const session_userid = '[[${session.email}]]'
+   			if(getCookie('remember-me') !== '' && session_userid !== '') {
+   				document.location.href='/board/list?page=1'
+   			}
+   			
+   			let email = getCookie('email');
    			let password = getCookie('password');
    			let authkey = getCookie('authkey');
-   			console.log(userid, password, authkey)
+   			console.log(email, password, authkey)
    			
-   			// userid 쿠키가 존재하면...
-   			if(userid !== undefined) {
-   				document.querySelector('#rememberUserid').checked = true;
-   				document.querySelector('#userid').value = userid;
+   			// Email 쿠키가 존재하면...
+   			if(email !== undefined) {
+   				document.querySelector('#rememberEmail').checked = true;
+   				document.querySelector('#email').value = email;
    			} else {
-   				document.querySelector('#rememberUserid').checked = false;
+   				document.querySelector('#rememberEmail').checked = false;
    			}
    			
    			// 패스워드 쿠기가 존재하면... 
@@ -148,14 +154,14 @@
    		// 로그인 처리
    		const loginCheck = async () => {
    			
-   			const userid = document.querySelector('#userid');
+   			const email = document.querySelector('#email');
    			const password = document.querySelector('#password');
    			const rememberMe = document.querySelector('#rememberMe');
    			
    			
-				if(userid.value == '') {
+				if(email.value == '') {
    					alert('아이디를 입력하세요');
-   					userid.focus();
+   					email.focus();
    					return false
  				}   				
 				if(password.value == '') {
@@ -166,7 +172,7 @@
 				
 			// let formData = new FormData(loginForm);
 			let formData = new FormData();
-			formData.append("userid", userid.value);
+			formData.append("email", email.value);
 			formData.append("password", password.value);
 			
 			await fetch('/member/loginCheck',{  // 패스워드에 대한 체크를 서버에서 해줘야 함.
@@ -175,8 +181,8 @@
 			}).then((response) => response.json())
 				.then((data) => {
 					if(data.message === 'GOOD') {
-						// cookieManage(userid.value, password.value, data.authkey);
-						cookieManage(userid.value, password.value);
+						// cookieManage(email.value, password.value, data.authkey);
+						cookieManage(email.value, password.value);
 						// document.location.href='/board/list?page=1';
 						login();
 					}else if(data.message === 'ID_NOT_FOUND') {
@@ -193,8 +199,8 @@
 			}
    		
    		 // 이메일 체크 관리
-   		 const checkRememberUserid = () => {
-   			if(document.querySelector('#rememberUserid').checked)
+   		 const checkRememberEmail = () => {
+   			if(document.querySelector('#rememberEmail').checked)
    		 		document.querySelector('#rememberMe').checked = false;
    		 }
    		 
@@ -207,19 +213,19 @@
    		 // 자동 로그인 체크 관리
    		 const checkRememberMe = () => {
    			if(document.querySelector('#rememberMe').checked) {
-   		 		document.querySelector('#rememberUserid').checked = false;
+   		 		document.querySelector('#rememberEmail').checked = false;
    				document.querySelector('#rememberPassword').checked = false;
    			}
    		 }
    		 
    		 // 쿠키 관리
-   		 const cookieManage = (userid, password) => {
+   		 const cookieManage = (email, password) => {
    			 
-   			 // userid가 체크되었을 경우
-   			 if(rememberUserid.checked) {
-   				 document.cookie = 'userid=' + userid + '; path=/; expires=Sun, 31, Dec 2023 23:59:59 GMT';
+   			 // email가 체크되었을 경우
+   			 if(rememberEmail.checked) {
+   				 document.cookie = 'email=' + email + '; path=/; expires=Sun, 31, Dec 2023 23:59:59 GMT';
    			 } else {
-   				 document.cookie = 'userid=' + userid + '; path=/; max-age=0'
+   				 document.cookie = 'email=' + email + '; path=/; max-age=0'
    			 }
    			 
    			// password가 체크되었을 경우
@@ -261,11 +267,11 @@
 		<div class="login">
 			<h1>로그인</h1>
 			<form name="loginForm" id="loginForm" method="POST">
-				<input type="text" name="userid" class="userid" id="userid" placeholder="아이디를 입력하세요">
+				<input type="text" name="email" class="email" id="email" placeholder="이메일을 입력하세요">
 				<input type="password" name="password" class="password" id="password" placeholder="패스워드를 입력하세요" onkeydown="press()">
 				<p id="msg" style="color:red; text-align:center"></p>
 				<br>
-				<input type="checkbox" id="rememberUserid" onclick="checkRememberUserid()">아이디 기억
+				<input type="checkbox" id="rememberEmail" onclick="checkRememberEmail()">아이디 기억
 				<input type="checkbox" id="rememberPassword" onclick="checkRememberPassword()">패스워드 기억
 				<input type="checkbox" id="rememberMe" class="remember" name="remember-me" onclick="checkRememberMe()">자동 로그인
 				| <a href ="/oauth2/authorization/google">구글 계정으로 로그인</a>

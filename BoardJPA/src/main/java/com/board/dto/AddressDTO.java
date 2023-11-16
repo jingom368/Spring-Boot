@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class AddressDTO {
+	private Long seqno;
 	private String zipcode;
 	private String province;
 	private String road;

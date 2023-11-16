@@ -4,13 +4,16 @@ import java.io.File;
 import java.net.URLEncoder;
 import java.security.PublicKey;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.board.dto.AddressDTO;
 import com.board.dto.MemberDTO;
+import com.board.entity.AddressEntity;
 import com.board.service.MemberService;
 import com.board.util.PageUtil;
 import com.board.util.Password;
@@ -70,7 +75,7 @@ public class MemberController {
 			if(memberInfo != null ) {
 				// 세션 생성
 				session.setMaxInactiveInterval(3600*24*7); // 세션 유지 기간
-				session.setAttribute("userid", memberInfo.getUserid());
+				session.setAttribute("email", memberInfo.getEmail());
 				session.setAttribute("username", memberInfo.getUsername());
 				session.setAttribute("role", memberInfo.getRole());
 				
@@ -79,19 +84,22 @@ public class MemberController {
 			}
 		}
 		
-		System.out.println("userid = " + member.getUserid());
+		System.out.println("email = " + member.getEmail());
 		System.out.println("password = " + member.getPassword());
 		System.out.println("DB password = " + service.memberInfo("jingom368"));
 		*/
 		
 		// 아이디 존재 여부 확인
-		if(service.idCheck(member.getUserid()) == 0) {
+		if(service.idCheck(member.getEmail()) == 0) {
 			// return "redirect:/";
 			return "{\"message\":\"ID_NOT_FOUND\"}";
 		}
+		System.out.println("front email : " + member.getEmail());
+		System.out.println("front passwrod : " + member.getPassword());
+		System.out.println("server password : " + service.memberInfo(member.getEmail()).getPassword());
 		
 		// 패스워드가 올바르게 들어 왔는지 확인
-		if(!pwdEncoder.matches(member.getPassword(), service.memberInfo(member.getUserid()).getPassword())) {
+		if(!pwdEncoder.matches(member.getPassword(), service.memberInfo(member.getEmail()).getPassword())) {
 			
 			// 잘못된 패스워드일 때
 			// return "redirect:/board/list?page=1";
@@ -113,9 +121,9 @@ public class MemberController {
 			
 			// 세션 생성
 			session.setMaxInactiveInterval(3600*24*7); // 세션 유지 기간
-			session.setAttribute("userid", service.memberInfo(member.getUserid()).getUserid());
-			session.setAttribute("username", service.memberInfo(member.getUserid()).getUsername());
-			session.setAttribute("role", service.memberInfo(member.getUserid()).getRole());
+			session.setAttribute("email", service.memberInfo(member.getEmail()).getEmail());
+			session.setAttribute("username", service.memberInfo(member.getEmail()).getUsername());
+			session.setAttribute("role", service.memberInfo(member.getEmail()).getRole());
 			
 			// return "redirect:/";
 			return "{\"message\":\"GOOD\",\"authkey\":\"" + member.getAuthkey() + "\"}";
@@ -160,7 +168,7 @@ public class MemberController {
 				String inputPassword = member.getPassword();
 				String pwd = pwdEncoder.encode(inputPassword); // 단방향 암호화
 				member.setPassword(pwd);
-				member.setLastpwdate(LocalDate.now());		
+				member.setLastpwdate(LocalDateTime.now());		
 		}
 			service.memberInfoRegistry(member);
 			// return "redirect:/board/list?page=1";
@@ -177,9 +185,9 @@ public class MemberController {
 	// 회원 가입 시 아이디 중복 확인
 	@ResponseBody
 	@PostMapping("/member/idCheck")
-	public int postIdCheck(@RequestBody String userid) throws Exception {
+	public int postIdCheck(@RequestBody String email) throws Exception {
 		
-		int result = service.idCheck(userid);
+		int result = service.idCheck(email);
 		System.out.println("result = " + result);
 		return result;
 	}
@@ -187,20 +195,20 @@ public class MemberController {
 	// 로그아웃
 	@GetMapping("/member/logout")
 	public String getLogout(HttpSession session, Model model) {
-		String userid = (String)session.getAttribute("userid");
+		String email = (String)session.getAttribute("email");
 		String username = (String)session.getAttribute("username");
 		
-		System.out.println("userid : " + userid);
+		System.out.println("email : " + email);
 		
 		MemberDTO member = new MemberDTO();
-		member.setUserid(userid);
-		member.setLastlogoutdate(LocalDate.now());
+		member.setEmail(email);
+		member.setLastlogoutdate(LocalDateTime.now());
 		
 		System.out.println("Lastlogoutdate : " + LocalDate.now());
 
 		service.lastlogoutdateUpdate(member);
 		
-		model.addAttribute("userid", userid);
+		model.addAttribute("email", email);
 		model.addAttribute("username", username);
 		// session.invalidate(); // 모든 세션 종료 --> 로그아웃...
 		
@@ -211,10 +219,10 @@ public class MemberController {
 	@GetMapping("member/memberSessionOut")
 	public String getMemberSessionOut(HttpSession session) {
 		
-		String userid = (String)session.getAttribute("userid");
+		String email = (String)session.getAttribute("email");
 		MemberDTO member = new MemberDTO();
-		member.setUserid(userid);
-		member.setLastlogoutdate(LocalDate.now());
+		member.setEmail(email);
+		member.setLastlogoutdate(LocalDateTime.now());
 		service.lastlogoutdateUpdate(member);
 		session.invalidate();
 		return "redirect:/";
@@ -231,9 +239,9 @@ public class MemberController {
 	@PostMapping("/member/searchID")
 	public String postSearchID(MemberDTO member) {
 		
-		String userid = (service.searchID(member) == null?"ID_NOT_FOUND":service.searchID(member));
-		System.out.println("userid : " + userid);
-		return "{\"userid\":\"" + userid + "\"}";
+		String email = (service.searchID(member) == null?"ID_NOT_FOUND":service.searchID(member));
+		System.out.println("email : " + email);
+		return "{\"email\":\"" + email + "\"}";
 	}
 	
 	//임시 패드워드 설정
@@ -245,12 +253,12 @@ public class MemberController {
 	@ResponseBody
 	@PostMapping("/member/searchPassword")
 	public String getSearchPassword(MemberDTO member) {
-		System.out.println("userid : " + member.getUserid());
+		System.out.println("email : " + member.getEmail());
 		System.out.println("telno : " + member.getTelno());
-		System.out.println("service telno : " + service.memberInfo(member.getUserid()).getTelno());
-		if(service.idCheck(member.getUserid()) == 0)
+		System.out.println("service telno : " + service.memberInfo(member.getEmail()).getTelno());
+		if(service.idCheck(member.getEmail()) == 0)
 			return "{\"message\":\"ID_NOT_FOUND\"}";
-		if(!service.memberInfo(member.getUserid()).getTelno().equals(member.getTelno())) {
+		if(!service.memberInfo(member.getEmail()).getTelno().equals(member.getTelno())) {
 			return "{\"message\":\"TELNO_NOT_FOUND\"}";
 		}
 		
@@ -261,7 +269,7 @@ public class MemberController {
 		System.out.println("pwRandom: " + pwRandom);
 		// 임시 패스워드 인코딩 후 수정
 		member.setPassword(pwdEncoder.encode(pwRandom));
-		member.setLastpwdate(LocalDate.now());
+		member.setLastpwdate(LocalDateTime.now());
 		System.out.println("pwRandomencode: " + pwdEncoder.encode(pwRandom));
 		service.memberPasswordModify(member);
 		return "{\"message\":\"GOOD\",\"password\":\"" + pwRandom + "\"}";
@@ -278,22 +286,32 @@ public class MemberController {
 	public void getAddrsearch(@RequestParam("addrSearch") String addrSearch, 
 			@RequestParam("page") int pageNum, Model model) {
 		int postNum = 10; // 한 화면에 보여지는 게시물 행의 갯수
-		int startPoint = (pageNum-1)*postNum + 1; 
-		int endPoint = pageNum*postNum;
+		// int startPoint = (pageNum-1)*postNum + 1; 
+		// int endPoint = pageNum*postNum;
 		int pageListCount = 5; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수
-		int totalCount = service.addrTotalCount(addrSearch); // 전체 게시물 갯수
+		// int totalCount = service.addrTotalCount(addrSearch); // 전체 게시물 갯수
+		Page<AddressEntity> list = service.addrSearch(pageNum, postNum, addrSearch);
+		List<AddressEntity> addressList = list.getContent();
+		int totalCount = (int)list.getTotalElements(); // 
 		
 		PageUtil page = new PageUtil();
+		for (AddressEntity address : addressList) {
+			AddressDTO addressDTO = new AddressDTO(address);
+		    System.out.println("Road: " + addressDTO.getRoad());
+		    System.out.println("Building: " + addressDTO.getBuilding());
+		    // 다른 필요한 주소 정보들을 출력하거나 처리할 수 있습니다.
+		}
 		
-		model.addAttribute("list", service.addrSearch(startPoint, endPoint, addrSearch));
+		// model.addAttribute("list", service.addrSearch(pageNum, postNum, addrSearch));;
+		model.addAttribute("list",list);
 		model.addAttribute("pageList", page.getPageAddress(pageNum, postNum, pageListCount, totalCount, addrSearch));
 	}
 	
 	// 회원 정보 보기
 	@GetMapping("/board/memberInfo")
 	public void getmemberInfo(HttpSession session, Model model) throws Exception {
-		String userid = (String)session.getAttribute("userid");
-		model.addAttribute("memberInfo", service.memberInfo(userid));
+		String email = (String)session.getAttribute("email");
+		model.addAttribute("memberInfo", service.memberInfo(email));
 	}
 	
 	// 회원 기본 정보 변경
@@ -314,10 +332,10 @@ public class MemberController {
 	public String postMemberPasswordModify(@RequestParam("old_password") String old_password,
 			@RequestParam("new_password") String new_password, HttpSession session) throws Exception {
 		
-		String userid = (String)session.getAttribute("userid");
+		String email = (String)session.getAttribute("email");
 		
 		// 패스워드가 올바르게 들어 왔는지 확인
-		if(!pwdEncoder.matches(old_password, service.memberInfo(userid).getPassword())) {
+		if(!pwdEncoder.matches(old_password, service.memberInfo(email).getPassword())) {
 			// 잘못된 패스워드일 때
 			// return "redirect:/board/list?page=1";
 			return "{\"message\":\"PASSWORD_NOT_FOUND\"}";	
@@ -325,9 +343,9 @@ public class MemberController {
 		
 		// 신규 패스워드로 업데이트
 		MemberDTO member = new MemberDTO();
-		member.setUserid(userid);
+		member.setEmail(email);
 		member.setPassword(pwdEncoder.encode(new_password));
-		member.setLastpwdate(LocalDate.now());
+		member.setLastpwdate(LocalDateTime.now());
 		service.memberPasswordModify(member);
 		
 		return "{\"message\":\"GOOD\"}";

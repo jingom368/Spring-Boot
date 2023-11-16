@@ -9,7 +9,7 @@ import com.board.entity.MemberEntity;
 public interface MemberRepository extends JpaRepository<MemberEntity, String>{
 
 	// 아이디 찾기
-	public Optional<MemberEntity> findByUsernameAndtelno(String username, String telno);
+	public Optional<MemberEntity> findByUsernameAndTelno(String username, String telno);
 	
 	/*
 	 	<select id="searchID" parameterType="com.board.dto.MemberDTO" resultType="string">

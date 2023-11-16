@@ -41,7 +41,7 @@
 				<input type="text" id="addr2" class="input_field" name="addr2" placeholder="상세주소를 입력하세요.">
 				<input type="hidden" id="address" name="address">
 				<input type="text" id="telno" class="input_field" name="telno" placeholder="전화번호를 입력하세요.">
-				<input type="text" id="email" class="input_field" name="email" placeholder="이메일 주소를 입력하세요.">
+				<input type="text" id="nickname" class="input_field" name="nickname" placeholder="별명을 입력하세요.">
 				<textarea class="input_content" id="description" cols="100" rows="500" name="description" placeholder="자기 소개를 입력해 주세요">
 				</textarea><br>
 				<input type="button" id="btnRegister" class="btn_write" value="수정"><br><br>
@@ -168,12 +168,6 @@
    				const afterTelno = beforeTelno.replace(/\-/ig,"").replace(/\ /ig,"").trim(); // -가 있으면 ""로 대체, 공백이 있으면 ""로 대체, 문자열 좌우의 공백 없애기.
    				telno.value = afterTelno;
    				
-   				if(email.value == '') {
- 	   				alert('이메일 주소를 입력하세요');
-  	   				email.focus();
-  	   				return false
-  	   			}
-   				
    				// 숙제 = 이메일 유효성 검사 로직 만들기
    				
    				if(description.value == '') {
@@ -275,11 +269,11 @@
 		}
 		
 		const idCheck = async () => { // function async idCheck()			
-			const userid = document.querySelector('#userid');
+			const email = document.querySelector('#email');
 
 			await fetch('/member/idCheck', {
 				method: "POST",
-				body: userid.value
+				body: email.value
 			}).then((response) => response.text())
 				.then((data) => { 
 					console.log(data)
@@ -289,8 +283,8 @@
 					}
 					else {
 						idCheckNotice.innerHTML = "이미 사용중인 아이디입니다.";	
-						userid.value = '';
-						userid.focus();
+						email.value = '';
+						email.focus();
 					}
 				});
 		}

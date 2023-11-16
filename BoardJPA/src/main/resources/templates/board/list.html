@@ -7,6 +7,7 @@
     <link href="/css/style.css" rel="stylesheet">
     <script src="/js/getCookie.js"></script>
     <script>
+    	console.log('[[${session.role}]]')
     	
     	const search = () => {
     		const keyword = document.querySelector('#keyword');
@@ -85,7 +86,7 @@
             <a href="/board/list?page=1">처음으로</a>&nbsp;&nbsp;
             <a href="/board/write">글쓰기</a>&nbsp;&nbsp;
             <a href="/board/memberInfo">사용자관리</a>&nbsp;&nbsp;
-            <th:block th:if="${session.role} == 'MASTER'">
+            <th:block th:if="${session.role == 'MASTER'}">
             	<a href="/master/sysManage">시스템관리</a>&nbsp;&nbsp;
             </th:block>
             <a href="javascript:logout()">로그아웃</a>&nbsp;&nbsp;

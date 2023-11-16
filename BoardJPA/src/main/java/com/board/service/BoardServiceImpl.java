@@ -250,7 +250,7 @@ class BoardServiceImpl implements BoardService {
 
 	// 댓글 등록
 	@Override
-	public void replyRegistry(ReplyDTO reply) throws Exception {
+	public void replyRegistry(ReplyInterface reply) throws Exception {
 		// mapper.replyRegistry(reply);
 		BoardEntity boardEntity = boardRepository.findById(reply.getSeqno()).get();
 		MemberEntity memberEntity = memberRepository.findById(reply.getEmail()).get();

@@ -49,13 +49,13 @@
 		<div style="width:70%; height:auto; margin:auto; padding:20px; border:none;">
 			<img th:src="@{'/profile/' + ${memberInfo.stored_filename}}" style="display:block; width:80%; height:auto; margin:auto;" >
 		</div>
-		<div class="items" th:text="|아이디 : ${memberInfo.userid}|"></div>
+		<div class="items" th:text="|아이디 : ${memberInfo.email}|"></div>
 		<div class="items" th:text="|이름 : ${memberInfo.username}|"></div>
 		<div class="items" th:text="|직업 : ${memberInfo.job}|"></div>
 		<div class="items" th:text="|성별 : ${memberInfo.gender}|"></div>
 		<div class="items" th:text="|취미 : ${memberInfo.hobby}|"></div>
 		<div class="items" th:text="|전화번호 : ${memberInfo.telno}|"></div>
-		<div class="items" th:text="|이메일 : ${memberInfo.email}|"></div>
+		<div class="items" th:text="|별명 : ${memberInfo.nickname}|"></div>
 		<div class="items" th:text="|가입일자 : ${memberInfo.regdate}|"></div>
 		<div class="items" th:text="|최종 로그인 날짜 : ${memberInfo.lastlogindate}|"></div>
 		<div class="items" th:text="|최종 로그아웃 날짜 : ${memberInfo.lastlogoutdate}|"></div>

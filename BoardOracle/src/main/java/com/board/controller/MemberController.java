@@ -352,7 +352,6 @@ public class MemberController {
 			System.out.println("signup => good");
 			String path = "c:\\Repository\\profile\\";
 			File targetFile;
-			
 			// 중요한 것!
 			if(!multipartFile.isEmpty()) {
 				

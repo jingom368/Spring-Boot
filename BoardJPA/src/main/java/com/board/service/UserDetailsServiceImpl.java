@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.board.dto.MemberDTO;
+import com.board.entity.MemberEntity;
+import com.board.entity.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +20,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService{
 
-	private final MemberService service;
+	// private final MemberService service;
+	private final MemberRepository memberRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		// username은 스프링 시큐리티가 필터로 작동하면서 로그인 요청에서 가로채온 userid임.
-		MemberDTO memberInfo = service.memberInfo(username); 
+		// MemberDTO memberInfo = service.memberInfo(username); 
+		MemberEntity memberInfo = memberRepository.findById(username).get();
 		
 		if(memberInfo == null) {
 			throw new UsernameNotFoundException("아이디가 존재하지 않습니다.");

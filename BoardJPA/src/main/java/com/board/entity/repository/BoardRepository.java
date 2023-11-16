@@ -30,7 +30,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
 	 */
 	
 	// 게시물 이전 보기 --> JPQL
-	@Query("select max(b.seqno) from tbl_board b where b.seqno < :seqno and (b.writer like %:keyword1% or b.title like %:keyword2% or b.content like %:keyword3%)")
+	@Query("select max(b.seqno) from board b where b.seqno < :seqno and (b.writer like %:keyword1% or b.title like %:keyword2% or b.content like %:keyword3%)")
 	public Long pre_seqno(@Param("seqno") Long seqno, @Param("keyword1") String keyword1, @Param("keyword2") String keyword2, @Param("keyword3") String keyword3);
 	
 	/* 
@@ -45,7 +45,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
 	 */
 	
 	// 게시물 다음 보기 --> JPQL
-	@Query("select min(b.seqno) from tbl_board b where b.seqno > :seqno and (b.writer like %:keyword1% or b.title like %:keyword2% or b.content like %:keyword3%)")
+	@Query("select min(b.seqno) from board b where b.seqno > :seqno and (b.writer like %:keyword1% or b.title like %:keyword2% or b.content like %:keyword3%)")
 	public Long next_seqno(@Param("seqno") Long seqno, @Param("keyword1") String keyword1, @Param("keyword2") String keyword2, @Param("keyword3") String keyword3);
 	
 	/*
@@ -59,11 +59,11 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
 		</select>
 	 */
 	
-	//게시물 조회수 증가 --> Native SQL
-	@Transactional
-	@Modifying // 테이블에 DML(insert, update, delete)을 실행 시켜 변화를 주었을 경우 테이블에 반영된 내용을 엔티티 클래스에 반영
-	@Query(value="update tbl_board set hitno = (select nvl(hitno, 0) from tbl_board where seqno = :seqno) + 1 where seqno = :seqno", nativeQuery=true)
-	public void hitno(@Param("seqno") Long seqno);
+	//게시물 조회수 증가 --> Native SQL 
+    @Transactional
+    @Modifying //테이블에 DML(insert, update, delete)을 실행 시켜 변화를 주었을 경우 테이블에 반영된 내용을 엔티티 클래스에 반영 
+    @Query(value="update tbl_board set hitno = (select nvl(hitno,0) from tbl_board where seqno = :seqno) + 1 where seqno = :seqno",nativeQuery = true)
+    public void hitno(@Param("seqno") Long seqno);
 	
 	/* 
 	 	<update id="hitno" parameterType="int">

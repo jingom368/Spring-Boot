@@ -33,4 +33,19 @@ select m.userid, m.username, count(r.replyseqno) as reply_count
 	group by m.userid, m.username order by reply_count DESC
 </select>
 
+<select id="memberCount" resultType="string">
+select count(*) from tbl_member
+</select>
+
+<!-- 유저 게시물/댓글 resultMap 정의 -->
+<resultMap id="fileListMap" type="HashMap">
+    <id property="fileseqno" column="fileseqno" />
+    <result property="userid" column="userid" />
+    <result property="org_filename" column="org_filename" />
+</resultMap>
+
+<select id="fileList" resultMap="fileListMap">
+	select fileseqno, org_filename, userid from tbl_file where checkfile='O' order by fileseqno asc 
+</select>
+
 </mapper>

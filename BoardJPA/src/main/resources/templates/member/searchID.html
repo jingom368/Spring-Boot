@@ -26,8 +26,8 @@
 			body: formData
 		}).then((response) => response.json())
 			.then((data) => {
-				if(data.message !== 'ID_NOT_FOUND' ) {
-					let result = "<br><br><h1>아이디: " + data.userid + "</h1>";
+				if(data.email !== 'ID_NOT_FOUND' ) {
+					let result = "<br><br><h1>아이디: " + data.email + "</h1>";
 					IDSearchResult.innerHTML = result;
 				}else {
 					alert("해당 조건에 맞는 아이디가 존재하지 않습니다.");

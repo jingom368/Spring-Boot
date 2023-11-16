@@ -93,6 +93,7 @@ public class MemberServiceImpl implements MemberService {
 	
 	// 회원 정보 수정
 	public void memberInfoUpdate(MemberDTO member) {
+		System.out.println("서비스");
 		mapper.memberInfoUpdate(member);
 	}
 

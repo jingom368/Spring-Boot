@@ -8,72 +8,6 @@
 
 </head>
 
-<body onload="startupPage()">
-
-    <div class="main">
-        <img src="/images/logo.jpg" class="topBanner"><br>
-        <h1 style="text-align:center;">게시물 내용 보기</h1>
-        <br>
-        
-        <div class = "boardView">
-            <div class="items_v" th:text="'글쓴이 : ' + ${view.writer}"></div>
-   			<div class="items_v" th:text="'제목 : ' + ${view.title}"></div>
-            <!-- <div class="items_v">날짜 : ${view.regdate}</div> -->
-            <div class="items_v" th:text="${#temporals.format(view.regdate,'yyyy-MM-dd HH:mm:ss')}"></div>
-            <div class="textArea"><pre th:text="'내용 : ' + ${view.content}"></pre></div>
-
-	        <div th:each="file:${fileInfoView}"  class="field">
-	        	파일명 : <a th:href="@{'/board/fileDownload?fileseqno=' + ${file.fileseqno}}"
-   						th:text="|${file.org_filename}, ${file.filesize} Byte|"></a>
-	        </div>
-
-	        
-	        
-	        
-	        <div class="likeForm" style="width:30%; height:auto; margin:auto">
-		  		<span id="like"></span>&nbsp;
-		  		<a href='javascript:likeView()' id='likeClick' class='likeClick'>좋아요</a>&nbsp;
-		  		<a href='javascript:dislikeView()' id='dislikeClick' class='dislikeClick'>싫어요</a>&nbsp;
-				<span id="dislike"></span>&nbsp;
-				<br>
-				<span id='myChoice' style='text-align:center; color:red'></span>            		
-			 </div>
-        </div>
-        <br>
-
-        <div class="bottom_menu">
-			<th:block th:if="${pre_seqno != 0}">
-           		 <a th:href="@{'/board/view?seqno=' + ${pre_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">이전</a>&nbsp;&nbsp;
-           	</th:block>
-           	 	<a th:href="@{'/board/list?page=' + ${page} + '&keyword=' + ${keyword}}">목록가기</a>&nbsp;&nbsp;
-			<th:block th:if="${next_seqno != 0}">
-           	 	<a th:href="@{'/board/view?seqno=' + ${next_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">다음</a>&nbsp;&nbsp;
-           	</th:block>
-            	<a href="/board/write">글 작성</a>&nbsp;&nbsp;
-            <th:block th:if="${session.userid == view.userid}">
-	            <a th:href="@{'/board/modify?seqno=' + ${view.seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">글 수정</a>&nbsp;&nbsp;
-	            <a href="javascript:boardDelete()">글 삭제</a>
-            </th:block>
-        </div>
-        <br><br>
-        
-        <div class="replyDiv" style="width:60%; height:300px; margin:auto; text-align:left;">
-        	<p id="replyNotice">댓글을 작성해 주세요.</p>
-        	<form id="replyForm" name="replyForm" method="POST">
-        		작성자 : <input type="text" id="replywriter" name="replywriter" th:value="${session.username}" readonly>
-        		<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수: 150자 이내">
-        		</textarea><br>
-        		<input type="hidden" id="seqno" name="seqno" th:value="${view.seqno}">
-        		<input type="hidden" id="userid" name="userid" th:value="${session.userid}">
-        	</form>
-        	<input type="button" id="btn_reply" value="댓글등록" onclick="replyRegister()">
-        	<input type="button" id="btn_cancle" value="취소" onclick="replyCancle()">
-        	<hr>
-        	<div id="replyList" style="width:90%; height:600px; overflow:auto;"></div>
-        </div>
-    </div>
-</body>
-
     <script>
 
 		var myLikeCheck;
@@ -162,7 +96,7 @@
 		
 		const queryString = {
 			seqno: parseInt('[[${view.seqno}]]'),
-			userid: '[[${session.userid}]]',
+			email: '[[${session.email}]]',
 			mylikecheck: myLikeCheck,
 			mydislikecheck: myDislikeCheck,
 			checkCnt: checkCnt
@@ -200,17 +134,22 @@
 				return false; 
     		}
     		
-    		const data = {
+    		/* const data = {
    				replywriter: replywriter.value,
    				replycontent: replycontent.value,
-   				userid: userid.value,
+   				email: email.value,
    				seqno: seqno.value
     		}
+    			console.log("replywriter : " + replywriter.value)
+    			console.log("seqno : " + seqno.value) */
+    		
+    		let formData = new FormData(replyForm)
     		
     		await fetch('/board/reply?option=I', {
     			method: 'POST',
-    			headers: {"content-type":"application/json"},
-    			body: JSON.stringify(data) // JSON 으로 변환
+    			// headers: {"content-type":"application/json"},
+    			// body: JSON.stringify(data) // JSON 으로 변환
+    			body: formData
     		}).then((response) => response.json())
     			.then((data) => replyList(data))
     			.catch((error) => {
@@ -224,7 +163,7 @@
     	// 댓글 목록 가져 오기
     	const replyList = (data) => {
     	
-    		var session_userid = '[[${session.userid}]]';
+    		var session_email = '[[${session.email}]]';
     		const jsonInfo = data;
     		
     		let replyList = document.querySelector('#replyList');
@@ -239,7 +178,7 @@
     			let result = "";
     			result += "작성자 : " + jsonInfo[i].replywriter
     			
-    			if(jsonInfo[i].userid === session_userid) {
+    			if(jsonInfo[i].email === session_email) {
     				result += "[<a href=" + "'javascript:replyModify(" + jsonInfo[i].replyseqno + ")' style='cursor:pointer'>수정</a> | ";
     				result += "<a href=" + "'javascript:replyDelete(" + jsonInfo[i].replyseqno + ")' style='cursor:pointer'>삭제</a>]";
     			}
@@ -274,14 +213,17 @@
     	
     	const startupPage = async () => {
 
-    		const data = {seqno: parseInt('[[${view.seqno}]]')};
-
+    		// const data = {seqno: parseInt('[[${view.seqno}]]')};
+			let formData = new FormData();
+			formData.append("seqno", "[[${view.seqno}]]")
+    		
     		await fetch('/board/reply?option=L', {
       			method: 'POST',
-      			headers: {
-      				"content-type":"application/json"
-   				},
-      			body: JSON.stringify(data)
+      			// headers: {
+      			// 	"content-type":"application/json"
+   				// },
+      			// body: JSON.stringify(data)
+      			body: formData
     		}).then((response) => response.json())
     			.then((data) => replyList(data))
     			.catch((error) => {
@@ -292,14 +234,18 @@
     	
     	const replyDelete = async (replyseqno) => {
 			if(confirm("정말로 삭제하시겠습니까?")) {
-	    		const data = {replyseqno:replyseqno, seqno: parseInt('[[${view.seqno}]]')};
-	
+	    		// const data = {replyseqno:replyseqno, seqno: parseInt('[[${view.seqno}]]')};
+				let formData = new FormData();
+				formData.append("replyseqno", replyseqno);
+				formData.append("seqno", "[[${view.seqno}]]")
+	    		
 	    		await fetch('/board/reply?option=D', {
 	      			method: 'POST',
-	      			headers: {
-	      				"content-type":"application/json"
-      				},
-	      			body: JSON.stringify(data)
+	      			// headers: {
+	      			// 	"content-type":"application/json"
+      				// },
+	      			// body: JSON.stringify(data)
+	      			body: formData
 	    		}).then((response) => response.json())
 	    			.then((data) => replyList(data))
 	    			.catch((error) => {
@@ -320,7 +266,7 @@
     							+ "<input type='hidden' name='replyseqno' value='" + replyseqno + "'>"
     							+ "<input type='hidden' name='seqno' value='[[${view.seqno}]]'>"
     							+ "<input type='hidden' id='replywriter' name='replywriter' value='[[${session.username}]]'>"
-    							+ "<input type='hidden' id='userid' name='userid' value='[[${session.userid}]]'><br>"
+    							+ "<input type='hidden' id='email' name='email' value='[[${session.email}]]'><br>"
     							+ "<textarea id='modify_replycontent' name='replycontent' cols='80' rows='5' maxlength='150' placeholder='글자수 150자 이내'>" 
     							+ modifyReplyContent.innerHTML + "</textarea><br>"
     							
@@ -337,17 +283,21 @@
     		
     		btnReplyModify.addEventListener('click', async () => {
     			
-    			const data = {
-    					replyseqno: replyseqno,
-    					replycontent: modify_replycontent.value
-    			};
+    			// const data = {
+    			// 		replyseqno: replyseqno,
+    			// 		replycontent: modify_replycontent.value
+    			// };
+    			let formData = new FormData();
+				formData.append("replyseqno", replyseqno);
+				formData.append("replycontent", modify_replycontent.value)
     			
     			await fetch('/board/reply?option=U', {
           			method: 'POST',
-          			headers: {
-          				"content-type":"application/json"
-          			},
-          			body: JSON.stringify(data)
+          			// headers: {
+          			// 	"content-type":"application/json"
+          			// },
+          			// body: JSON.stringify(data)
+          			body: formData
         		}).catch((error) => {
         				console.log("error = " + error);
         				alert("서버 장애로 댓글 수정이 실패했습니다.")
@@ -374,4 +324,74 @@
     		}
     	}
     </script>
+    
+    <body>
+	<script>
+		startupPage();
+	</script>
+
+    <div class="main">
+        <img src="/images/logo.jpg" class="topBanner"><br>
+        <h1 style="text-align:center;">게시물 내용 보기</h1>
+        <br>
+        
+        <div class = "boardView">
+            <div class="items_v" th:text="'글쓴이 : ' + ${view.writer}"></div>
+   			<div class="items_v" th:text="'제목 : ' + ${view.title}"></div>
+            <!-- <div class="items_v">날짜 : ${view.regdate}</div> -->
+            <div class="items_v" th:text="${#temporals.format(view.regdate,'yyyy-MM-dd HH:mm:ss')}"></div>
+            <div class="textArea"><pre th:text="'내용 : ' + ${view.content}"></pre></div>
+
+	        <div th:each="file:${fileInfoView}"  class="field">
+	        	파일명 : <a th:href="@{'/board/fileDownload?fileseqno=' + ${file.fileseqno}}"
+   						th:text="|${file.org_filename}, ${file.filesize} Byte|"></a>
+	        </div>
+
+	        
+	        
+	        
+	        <div class="likeForm" style="width:30%; height:auto; margin:auto">
+		  		<span id="like"></span>&nbsp;
+		  		<a href='javascript:likeView()' id='likeClick' class='likeClick'>좋아요</a>&nbsp;
+		  		<a href='javascript:dislikeView()' id='dislikeClick' class='dislikeClick'>싫어요</a>&nbsp;
+				<span id="dislike"></span>&nbsp;
+				<br>
+				<span id='myChoice' style='text-align:center; color:red'></span>            		
+			 </div>
+        </div>
+        <br>
+
+        <div class="bottom_menu">
+			<th:block th:if="${pre_seqno != 0}">
+           		 <a th:href="@{'/board/view?seqno=' + ${pre_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">이전</a>&nbsp;&nbsp;
+           	</th:block>
+           	 	<a th:href="@{'/board/list?page=' + ${page} + '&keyword=' + ${keyword}}">목록가기</a>&nbsp;&nbsp;
+			<th:block th:if="${next_seqno != 0}">
+           	 	<a th:href="@{'/board/view?seqno=' + ${next_seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">다음</a>&nbsp;&nbsp;
+           	</th:block>
+            	<a href="/board/write">글 작성</a>&nbsp;&nbsp;
+            <th:block th:if="${session.email == viewEmail}">
+	            <a th:href="@{'/board/modify?seqno=' + ${view.seqno} + '&page=' + ${page} + '&keyword=' + ${keyword}}">글 수정</a>&nbsp;&nbsp;
+	            <a href="javascript:boardDelete()">글 삭제</a>
+            </th:block>
+        </div>
+        <br><br>
+        
+        <div class="replyDiv" style="width:60%; height:300px; margin:auto; text-align:left;">
+        	<p id="replyNotice">댓글을 작성해 주세요.</p>
+        	<form id="replyForm" name="replyForm" method="POST">
+        		작성자 : <input type="text" id="replywriter" name="replywriter" th:value="${session.username}" readonly>
+        		<textarea id="replycontent" name="replycontent" cols="80" rows="5" maxlength="150" placeholder="글자수: 150자 이내">
+        		</textarea><br>
+        		<input type="hidden" id="seqno" name="seqno" th:value="${view.seqno}">
+        		<input type="hidden" id="email" name="email" th:value="${session.email}">
+        	</form>
+        	<input type="button" id="btn_reply" value="댓글등록" onclick="replyRegister()">
+        	<input type="button" id="btn_cancle" value="취소" onclick="replyCancle()">
+        	<hr>
+        	<div id="replyList" style="width:90%; height:600px; overflow:auto;"></div>
+        </div>
+    </div>
+</body>
+    
 </html>

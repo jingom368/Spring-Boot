@@ -43,13 +43,25 @@ public class MasterController {
 		model.addAttribute("boardCount", boardCount);
 	}
 	
-	@GetMapping("master/numberReply")
+	@GetMapping("/master/numberReply")
 	public void getNumberReply(Model model) throws Exception {
 		
 		List<HashMap<String, Object>> replyCount = service.replyCountGroupbyUserid();
 		System.out.println(replyCount);
 		
 		model.addAttribute("replyCount", replyCount);
+	}
+	
+	@GetMapping("/master/memberCount")
+	public void getMemberCount(Model model) throws Exception {
+		
+		model.addAttribute("memberCount", service.memberCount());
+	}
+	
+	@GetMapping("/master/fileList")
+	public void getFileList(Model model) throws Exception {
+		
+		model.addAttribute("fileList", service.fileList());
 	}
 	
 }

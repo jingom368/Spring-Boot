@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -59,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
 	public void memberPasswordModify(MemberDTO member) {
 		// mapper.memberPasswordModify(member);
 		MemberEntity memberEntity = memberRepository.findById(member.getEmail()).get();
-		memberEntity.setPassword(pwdEncoder.encode(member.getPassword()));
+		memberEntity.setPassword(member.getPassword());
 		memberRepository.save(memberEntity);
 	}
 	
@@ -85,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String searchID(MemberDTO member) {
 		// return mapper.searchID(member);
-		return memberRepository.findByUsernameAndtelno(member.getUsername(), member.getTelno())
+		return memberRepository.findByUsernameAndTelno(member.getUsername(), member.getTelno())
 						.map(m -> m.getEmail()).orElse("ID_NOT_FOUND");
 	}
 	
@@ -108,6 +109,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Page<AddressEntity> addrSearch(int pageNum, int postNum, String addrSearch) {
 		PageRequest pageRequest = PageRequest.of(pageNum-1, postNum, Sort.by(Direction.ASC,"zipcode"));
+		
 		return addressRepository.findByRoadContainingOrBuildingContaining(addrSearch, addrSearch, pageRequest);
 		/*
 		Map<String, Object> data = new HashMap<>();

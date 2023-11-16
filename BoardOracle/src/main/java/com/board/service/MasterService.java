@@ -15,4 +15,10 @@ public interface MasterService {
 	
 	// 유저마다 게시한 댓글 갯수
 	public List<HashMap<String, Object>> replyCountGroupbyUserid() throws Exception;
+	
+	// 유저 수
+	public String memberCount() throws Exception;
+	
+	// 파일 리스트
+	public List<HashMap<String, Object>> fileList() throws Exception;
 }
