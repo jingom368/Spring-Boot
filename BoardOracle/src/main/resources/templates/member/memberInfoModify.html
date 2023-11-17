@@ -70,12 +70,16 @@
     				['hobby','[[${memberInfo.hobby}]]'],
     		]
     		check.forEach((element) => {
-    			console.log(element[0],element[1]);
+    			console.log(element[0],element[1]); // 
     		    for(let i=0; i<document.getElementsByName(element[0]).length; i++) {
     		        if(document.getElementsByName(element[0])[i].value === element[1])
     		            document.getElementsByName(element[0])[i].checked = true;
     		    }
     		});
+    		
+    		// gender 태그를 찾고 value == memberInfo.gender(회사원)
+    		// checked == true
+    		
     		document.getElementsByName('job')[0].value = '[[${memberInfo.job}]]';
     		document.querySelector('#zipcode').value = '[[${memberInfo.zipcode}]]';
     		document.querySelector('#addr1').value = '[[${memberInfo.address}]]';

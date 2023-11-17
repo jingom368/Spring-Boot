@@ -61,6 +61,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 		session.setAttribute("email", memberInfo.getEmail());
 		session.setAttribute("username", memberInfo.getUsername());
 		session.setAttribute("role", memberInfo.getRole());
+		session.setAttribute("FromSocial", memberInfo.getFromSocial());
 		
 		log.info("************************* FormLogin 성공 *************************");
 		

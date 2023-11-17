@@ -21,4 +21,10 @@ public interface MasterService {
 	
 	// 파일 리스트
 	public List<HashMap<String, Object>> fileList() throws Exception;
+	
+	// 파일 리스트
+	public List<HashMap<String, Object>> fileDeleteList() throws Exception;
+	
+	// 파일 삭제
+	public void fileDelete(int fileseqno) throws Exception;
 }

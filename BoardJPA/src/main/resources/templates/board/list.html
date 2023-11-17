@@ -18,13 +18,17 @@
     		if(event.keyCode == 13) search(); // 13 = enter
     	}
     	
-    	const logout = () => {
+    	const beforeLogout = () => {
     		if(confirm('로그아웃하시겠습니까?')) {
+    			const FromSocial = '[[${session.FromSocial}]]';
+    			
     			let authkey = getCookie('authkey');
     			if(authkey != undefined)
     				document.cookie = 'authkey=' + authkey + '; path=/; max-age=0'
-    				
-    			document.location.href='/member/logout';
+    			if(FromSocial === 'Y')
+    				window.location = "https://mail.google.com/mail/u/0/?logout&h1=en";
+    			else 
+    				document.location.href='/member/logout';
     		}
     	}
     </script>
@@ -89,7 +93,7 @@
             <th:block th:if="${session.role == 'MASTER'}">
             	<a href="/master/sysManage">시스템관리</a>&nbsp;&nbsp;
             </th:block>
-            <a href="javascript:logout()">로그아웃</a>&nbsp;&nbsp;
+            <a href="javascript:beforeLogout()">로그아웃</a>&nbsp;&nbsp;
         </div>
     </div>
 </body>

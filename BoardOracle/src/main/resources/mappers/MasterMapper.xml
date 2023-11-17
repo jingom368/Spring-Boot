@@ -42,10 +42,19 @@ select count(*) from tbl_member
     <id property="fileseqno" column="fileseqno" />
     <result property="userid" column="userid" />
     <result property="org_filename" column="org_filename" />
+    <result property="stored_filename" column="stored_filename" />
 </resultMap>
 
 <select id="fileList" resultMap="fileListMap">
-	select fileseqno, org_filename, userid from tbl_file where checkfile='O' order by fileseqno asc 
+	select fileseqno, org_filename, stored_filename, userid from tbl_file where checkfile='O' order by fileseqno asc 
 </select>
+
+<select id="fileDeleteList" resultMap="fileListMap">
+	select fileseqno, org_filename, stored_filename, userid from tbl_file where checkfile='X' order by fileseqno asc 
+</select>
+
+<delete id="fileDelete" parameterType="int">
+	delete from tbl_file where fileseqno=#{fileseqno}
+</delete>
 
 </mapper>

@@ -38,4 +38,15 @@ public class MasterServiceImpl implements MasterService {
 		return mapper.fileList();
 	}
 	
+	// 파일 리스트
+	@Override
+	public List<HashMap<String, Object>> fileDeleteList() throws Exception {
+		return mapper.fileDeleteList();
+	}
+	
+	// 파일 삭제
+	@Override
+	public void fileDelete(int fileseqno) throws Exception {
+		mapper.fileDelete(fileseqno);
+	}
 }

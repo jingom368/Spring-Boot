@@ -47,6 +47,9 @@ public interface MemberMapper {
 	// 회원 탈퇴
 	public void deleteMember(String userid);
 	
+	// 파일 삭제
+	public void memberFileInfoUpdate(String userid);
+	
 	// 회원 정보 수정
 	public void memberInfoUpdate(MemberDTO member);
 	

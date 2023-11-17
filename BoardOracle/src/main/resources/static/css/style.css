@@ -8,7 +8,6 @@ a:active { color: red; }
 .main {text-align: center;}
 #hypertext { text-decoration-line: none; cursor: hand; }
 
-@charset "UTF-8";
 body { font-family: "나눔고딕", "맑은고딕" }
 h1 { font-family: "HY견고딕" }
 a:link { color: black; }
@@ -68,7 +67,7 @@ a:active { color: red; }
 	height: 40px;
 	background: linear-gradient(125deg, #81ecec, #6c5ce7, #81ecec);
 	background-position: left;
-	bakcground-size: 200%;
+	background-size: 200%;
 	color: white;
 	font-weight: bold;
 	border: none;
@@ -406,7 +405,7 @@ a:active { color: red; }
 	height: 40px;
 	background: linear-gradient(125deg, #81ecec, #6c5ce7, #81ecec);
 	background-position: left;
-	bakcground-size: 200%;
+	background-size: 200%;
 	color: white;
 	font-weight: bold;
 	border: none;

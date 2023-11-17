@@ -64,7 +64,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
 		session.setAttribute("email", email);
 		session.setAttribute("username", member.getUsername());
 		session.setAttribute("role", member.getRole());
-		
+		session.setAttribute("FromSocial", member.getFromSocial());
 		// OAuth2User라는 객체에 세 개의 값을 넣어줘서 OAuth2UserDetailsServiceImpl에서 return 해줘야 함.
 		return memberOAuth2DTO;
 		

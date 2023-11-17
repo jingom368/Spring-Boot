@@ -335,6 +335,8 @@ public class MemberController {
 		String userid = (String)session.getAttribute("userid");
 		String username = (String)session.getAttribute("username");
 		
+		
+		
 		model.addAttribute("userid", userid);
 		model.addAttribute("username", username);
 		session.invalidate(); // 모든 세션 종료 --> 로그아웃... 

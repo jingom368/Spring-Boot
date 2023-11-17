@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>게시물 수</title>
+<title>파일 정보 삭제</title>
  <style>
         body {
 		    font-family: Arial, sans-serif;
@@ -29,7 +29,7 @@
 		    background-color: aliceblue;
 		}
 		
-		th:first-child, td:first-child {
+		th, td {
 		    text-align: center;
 		}
 		
@@ -48,16 +48,15 @@
 		}
 		
  	    .modal {
-	        display: none;
 	        position: fixed;
 	        z-index: 1;
 	        left: 50%;
 	        top: 10%;
 	        transform: translate(-50%, -50%);
-	        width: 300px;
 	        max-width: calc(100% - 40px);
 	        max-height: calc(100% - 40px);
 	        overflow: auto;
+	        width: 240px;
 	        background-color: white;
 	        border: 1px solid #ccc;
 	        border-radius: 8px;
@@ -75,7 +74,7 @@
 	
 	    /* 확인 및 취소 버튼 스타일 */
 	    .modal-content .btn-container {
-	        display: flex;
+	        display: inline;
 	        justify-content: flex-end;
 	        margin-top: 20px;
 	    }
@@ -107,6 +106,12 @@
 	    .modal-content .btn-container button:hover {
 	        opacity: 0.8;
 	    }
+        .file-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            
+        }
     </style>
 </head>
 <body>
@@ -116,6 +121,7 @@
                 <th>번호</th>
                 <th>유저 아이디</th>
                 <th>파일명</th>
+                 <th>파일 사진</th>
                 <th>삭제</th>
             </tr>
         </thead>
@@ -124,28 +130,28 @@
                 <td th:text="${file.fileseqno}"></td>
                 <td th:text="${file.userid}"></td>
                 <td th:text="${file.org_filename}"></td>
-                <td><button th:onclick="|openModal(myModal${file.fileseqno})|">삭제</button></td>
+                <td><img th:src="@{'/file/'+${file.stored_filename}}" alt="file" class="file-image" /></td>
+                <td><button th:onclick="|openModal('myModal${file.fileseqno}')|">삭제</button></td>
             </tr>
         </tbody>
     </table>
     <div th:each="file: ${fileList}">
         <div th:id="|myModal${file.fileseqno}|" class="modal" style="display: none;">
             <div class="modal-content">
-				<span class="close" th:onclick="|closeModal(myModal${file.fileseqno})|">&times;</span>
-				<p>삭제 할건지 말건지 확인하시겠습니까?</p>
-				<button th:onclick="|confirmDelete(myModal${file.fileseqno})|">확인</button>
-				<button th:onclick="|closeModal(myModal${file.fileseqno})|">취소</button>
+				<span class="close" th:onclick="|closeModal('myModal${file.fileseqno}')|">&times;</span>
+				<p>정말 삭제하시겠습니까?</p>
+				<button th:onclick="|confirmDelete('${file.fileseqno}')|">확인</button>
+				<button th:onclick="|closeModal('myModal${file.fileseqno}')|">취소</button>
             </div>
         </div>
     </div>
-</body>
 
- 	<script th:inline="javascript">
+ 	<script th:each="file : ${fileList}">
         
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.style.display = 'flex';
-    }
+	    openModal = (modalId) => {
+	        const modal = document.getElementById(modalId);
+	        modal.style.display = 'inline';
+	    }
         
      	// 모달 창을 닫는 함수
         closeModal = (modalId) => {
@@ -154,15 +160,17 @@
         }
 
         // 삭제 확인 함수
-        function confirmDelete(index) {
-            alert('파일 ' + index + '가 삭제되었습니다.'); // 파일을 삭제하는 동작을 수행할 부분
-            closeModal(index);
+        confirmDelete = (modalId) => {
+        	document.location.href = '/master/fileDeleteX?fileseqno='+modalId;
+            alert('파일 ' + modalId + '가 삭제되었습니다.');
+            closeModal('modalId');
         }
 
         // 삭제 버튼 클릭 시 해당 모달 창을 표시하는 함수
-        function deleteOn(modalId) {
+        deleteOn = (modalId) => {
             const modal = document.getElementById(modalId);
             modal.style.display = 'block';
         }
     </script>
+</body>
 </html>

@@ -384,7 +384,8 @@ public class BoardController {
 		LocalDateTime now = LocalDateTime.now();
 		// String regdate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		// reply.setReplyregdate(regdate);
-		System.out.println("replycontent : "+reply.getReplyregdate());
+		System.out.println("replycontent : "+reply.getReplycontent());
+		System.out.println("replywriter : "+reply.getReplywriter());
 		
 		switch(option) {
 		
