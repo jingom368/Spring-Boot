@@ -25,8 +25,13 @@
     			let authkey = getCookie('authkey');
     			if(authkey != undefined)
     				document.cookie = 'authkey=' + authkey + '; path=/; max-age=0'
-    			if(FromSocial === 'Y')
+    			if(FromSocial === 'Y') {
+    				document.cookie = 'JSESSIONID=;path=/;max-age=0';
+    				fetch('/member/invalidate',{
+    					method:'POST'
+    				});
     				window.location = "https://mail.google.com/mail/u/0/?logout&h1=en";
+    			}
     			else 
     				document.location.href='/member/logout';
     		}

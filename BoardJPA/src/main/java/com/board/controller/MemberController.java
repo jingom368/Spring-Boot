@@ -215,6 +215,12 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	@PostMapping("/member/invalidate")
+	@ResponseBody
+	public void postInvalidate(HttpSession session) {
+		session.invalidate();
+	}
+	
 	// 패스워드 변경 후 세션 종료
 	@GetMapping("member/memberSessionOut")
 	public String getMemberSessionOut(HttpSession session) {

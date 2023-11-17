@@ -86,6 +86,11 @@ select seq,seqno,writer,title,regdate,hitno from
 	update tbl_file set checkfile = 'X' where seqno=#{seqno}
 </update>
 
+<!-- 탈퇴한 회원의 게시글 파일 X로 수정 -->
+<update id="memberFileInfoUpdate" parameterType="string">
+	update tbl_file set checkfile = 'X' where userid=#{userid}
+</update>
+
 <!-- 게시물 수정 -->
 <update id="modify" parameterType="com.board.dto.BoardDTO">
 	update tbl_board set writer = #{writer}, title = #{title}, content= #{content} where seqno= #{seqno}

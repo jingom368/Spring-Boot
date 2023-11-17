@@ -50,6 +50,9 @@ public interface BoardMapper {
 	
 	// 첨부 파일 삭제를 위한 checkfile 정보 변경
 	public void fileInfoUpdate(int seqno);
+	
+	// 파일 삭제
+	public void memberFileInfoUpdate(String userid);
 
 	// 게시물 삭제 하기
 	public void delete(int seqno) throws Exception;

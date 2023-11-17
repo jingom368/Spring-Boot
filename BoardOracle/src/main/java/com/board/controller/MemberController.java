@@ -326,24 +326,41 @@ public class MemberController {
 	// 회원 탈퇴 확인
 	@GetMapping("/member/memberWithdrawCheck")
 	public void getMemberWithdrawCheck() {
-		
-	}
 
+	}
+	
 	// 회원 탈퇴
+	@ResponseBody
+	@PostMapping("/member/memberWithdrawCheck")
+	public String postMemberWithdrawX(MemberDTO member, HttpSession session, Model model) {
+		String userid = (String)session.getAttribute("userid");
+		
+		System.out.println("userid : " + userid);
+		System.out.println("member_userid : " + member.getUserid());
+		if (userid.equals(member.getUserid())) {
+			System.out.println("userid2 : " + userid);
+			boardService.memberFileInfoUpdate(member.getUserid());
+			System.out.println("userid3 : " + userid);
+			service.deleteMember(userid);
+			return "{\"message\":\"GOOD\"}";
+		}
+		
+	
+		// 쿠키 삭제 추가
+		return "{\"message\":\"error\"}";
+
+	}
+	
+	// 회원 탈퇴 확인
 	@GetMapping("/member/memberWithdraw")
-	public void getMemberWithdraw(HttpSession session, Model model) {
+	public void getMemberWithdraw(MemberDTO member, HttpSession session, Model model) {
 		String userid = (String)session.getAttribute("userid");
 		String username = (String)session.getAttribute("username");
 		
-		
-		
 		model.addAttribute("userid", userid);
 		model.addAttribute("username", username);
-		session.invalidate(); // 모든 세션 종료 --> 로그아웃... 
-		// 쿠키 삭제 추가
 		
-		// service.deleteMember(userid);
-		System.out.println("userid : " + userid);
+		session.invalidate(); // 모든 세션 종료 --> 로그아웃...
 	}
 	
 	// 기본 정보 수정

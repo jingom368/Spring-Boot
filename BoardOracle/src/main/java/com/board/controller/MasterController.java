@@ -95,7 +95,6 @@ public class MasterController {
 	public String getFileDeleteX(@RequestParam("fileseqno") int fileseqno) throws Exception {
 		
 		service.fileDelete(fileseqno);
-		
 		return "redirect:/master/fileDelete";
 	}
 }

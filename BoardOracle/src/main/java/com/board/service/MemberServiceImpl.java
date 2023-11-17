@@ -92,13 +92,6 @@ public class MemberServiceImpl implements MemberService {
 		mapper.deleteMember(userid);
 	}
 	
-	// 파일 삭제
-	@Override
-	public void memberFileInfoUpdate(String userid) {
-		mapper.memberFileInfoUpdate(userid);
-	}
-	
-	
 	// 회원 정보 수정
 	@Override
 	public void memberInfoUpdate(MemberDTO member) {

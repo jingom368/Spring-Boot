@@ -78,11 +78,6 @@ where road like concat('%',#{addrSearch},'%') or building like concat('%',#{addr
 	delete from tbl_member where userid=#{userid}
 </delete>
 
-<!-- 탈퇴한 회원의 게시글 파일 X로 수정 -->
-<update id="memberFileInfoUpdate" parameterType="string">
-	update tbl_file set checkfile = 'X' where userid=#{userid}
-</update>
-
 <!-- 회원 정보 수정 -->
 <update id="memberInfoUpdate" parameterType="com.board.dto.MemberDTO">
 	update tbl_member set org_filename = #{org_filename}, stored_filename = #{stored_filename},

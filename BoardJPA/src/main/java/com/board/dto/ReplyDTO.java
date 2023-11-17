@@ -19,7 +19,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReplyDTO {
+public class ReplyDTO{
+
 	private Long replyseqno;
 	private Long seqno;
 	private String email;

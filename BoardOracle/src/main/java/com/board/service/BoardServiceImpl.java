@@ -99,6 +99,12 @@ class BoardServiceImpl implements BoardService {
 		mapper.fileInfoUpdate(seqno);
 	}
 	
+	// 파일 삭제
+	@Override
+	public void memberFileInfoUpdate(String userid) {
+		mapper.memberFileInfoUpdate(userid);
+	}
+	
 	// 게시물 수정 하기 - update
 	@Override
 	public void modify(BoardDTO board) throws Exception {
