@@ -2,7 +2,6 @@ package com.board.controller;
 
 import java.io.File;
 import java.net.URLEncoder;
-import java.security.PublicKey;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.UUID;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.apache.commons.io.output.BrokenWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -189,8 +187,7 @@ public class MemberController {
 		
 		System.out.println("Lastlogoutdate : " + LocalDate.now());
 
-		service.lastlogoutdateUpdate(member);
-		
+		service.lastlogoutdateUpdate(member);  
 		model.addAttribute("userid", userid);
 		model.addAttribute("username", username);
 		session.invalidate(); // 모든 세션 종료 --> 로그아웃...

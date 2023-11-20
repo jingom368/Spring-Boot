@@ -1,12 +1,12 @@
 package com.board.controller;
 
 import java.math.BigDecimal;
-import java.security.Provider.Service;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.web.server.ServerJwtDsl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,5 +96,12 @@ public class MasterController {
 		
 		service.fileDelete(fileseqno);
 		return "redirect:/master/fileDelete";
+	}
+	
+	// 시스템 정보
+	@GetMapping("/master/systemInfo")
+	public void getSystemInfo() throws Exception {
+		
+		System.out.println();
 	}
 }
