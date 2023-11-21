@@ -1,5 +1,6 @@
 package com.board.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,12 @@ public class MemberServiceImpl implements MemberService {
 	public void memberInfoUpdate(MemberDTO member) {
 		System.out.println("서비스");
 		mapper.memberInfoUpdate(member);
+	}
+	
+	// 30일 지나면 패스워드 변경 요청
+	@Override
+	public List<HashMap<String, Object>> PasswordChangeRequest(String userid) {
+		return mapper.PasswordChangeRequest(userid);
 	}
 
 }

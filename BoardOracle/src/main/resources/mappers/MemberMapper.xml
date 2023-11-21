@@ -8,9 +8,9 @@
 <!-- 회원 가입 -->
 <insert id="memberInfoRegistry" parameterType="com.board.dto.MemberDTO">
 	insert into tbl_member (userid, username, password, job, gender, hobby, telno, email, regdate,
-			zipcode, address, description, pwcheck, role, org_filename, stored_filename, filesize)
+			zipcode, address, description, pwcheck, role, org_filename, stored_filename, filesize, lastpwdate)
 			values (#{userid}, #{username}, #{password}, #{job}, #{gender}, #{hobby}, #{telno}, #{email}, sysdate, 
-			#{zipcode}, #{address}, #{description}, 1, 'USER', #{org_filename}, #{stored_filename}, #{filesize})		
+			#{zipcode}, #{address}, #{description}, 1, 'USER', #{org_filename}, #{stored_filename}, #{filesize}, #{lastpwdate})		
 </insert>
 
 <!-- 아이디 중복 확인 -->
@@ -25,7 +25,7 @@
 
 <!-- 패스워드 수정 -->
 <update id="memberPasswordModify" parameterType="com.board.dto.MemberDTO">
-	update tbl_member set password = #{password}, lastpwdate = #{lastpwdate} where userid = #{userid}
+	update tbl_member set password = #{password}, lastpwdate = #{lastpwdate}, pwcheck = #{pwcheck} where userid = #{userid}
 </update>
 
 <!-- 마지막 로그인 날짜 등록 하기 -->
@@ -85,4 +85,15 @@ where road like concat('%',#{addrSearch},'%') or building like concat('%',#{addr
 	zipcode=#{zipcode}, telno=#{telno}, email=#{email}, description=#{description}
 	where userid = #{userid}
 </update>
+
+<resultMap id="pwcheckMap" type="HashMap">
+    <result property="pwcheck" column="pwcheck" />
+    <result property="result" column="result" />
+</resultMap>
+
+<!-- 30일 지나면 패스워드 변경 요청 -->
+<select id="PasswordChangeRequest" parameterType="string" resultMap="pwcheckMap">
+select pwcheck, case when (lastlogindate - lastpwdate)/pwcheck >= 30 then 1 else 0
+  end as result from tbl_member where userid = #{userid}
+</select>
 </mapper>

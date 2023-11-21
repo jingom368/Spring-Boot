@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 수</title>
+<link href="/css/style.css" rel="stylesheet">
 	<style>
 		body {
 		    font-family: Arial, sans-serif;
@@ -15,10 +16,31 @@
 		h1 {
 		    color: #333;
 		    font-size: 28px;
+		    margin-top: 100px;
 		}
 	</style>
 </head>
 <body>
+	<div class="menubar">
+		<ul class="main_menu">
+			<li><a href="/board/list?page=1">홈으로</a></li>
+			<li><a href="">사용자통계</a>
+				<ul class="sub_menu">
+					<li><a href="/master/memberCount">전체 회원 숫자</a></li>
+					<li><a href="/master/numberPost">게시물 갯수</a></li>
+					<li><a href="/master/numberReply">댓글 갯수</a></li>
+				</ul>
+			</li>
+			<li><a href="">첨부파일</a>
+				<ul class="sub_menu">
+					<li><a href="/master/fileModify">첨부 파일 수정</a></li>
+					<li><a href="/master/fileDelete">첨부 파일 삭제</a></li>
+				</ul>
+			</li>
+			<li><a href="/master/boardManage">게시판관리</a></li>
+			<li><a href="/master/systemInfo">시스템정보</a></li>
+		</ul>
+	</div>
 	<h1>전체 회원 수 : <span th:text="${memberCount}"></span></h1>
 </body>
 </html>

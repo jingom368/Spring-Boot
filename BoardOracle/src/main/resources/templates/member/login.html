@@ -111,6 +111,14 @@
 						msg.innerHTML = '존재하지 않는 아이디입니다.';
 					}else if(data.message === 'PASSWORD_NOT_FOUND') {
 						msg.innerHTML = '잘못된 패스워드입니다.';
+					}else if(data.message === 'PWCHECK') {
+						let result = confirm('비밀번호를 변경한 지 30일이 지났습니다. 비밀번호를 바꾸시겠습니까?');
+						if (result) {
+							document.location.href='/member/memberPasswordModify';
+						} else {
+							cookieManage(userid.value, password.value, data.authkey);
+							document.location.href='/board/list?page=1';
+						}
 					}else {
 						alert("시스템 장애로 로그인이 실패 했습니다.");
 					}

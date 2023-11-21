@@ -1,8 +1,16 @@
 package com.board.controller;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
 
 import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +18,18 @@ import org.springframework.security.config.web.server.ServerJwtDsl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.board.dto.MemberDTO;
 import com.board.service.BoardService;
 import com.board.service.MasterService;
+import com.board.service.MemberService;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Session;
 
 @Controller
 public class MasterController {
@@ -22,7 +38,16 @@ public class MasterController {
 	MasterService service;
 	
 	@Autowired
+	MemberService memberservice; // 멤버 변수
+	
+	@Autowired
 	BoardService boardService;
+	
+	@Autowired
+	private ServletContext servletContext;
+	
+	@Autowired
+    private DataSource dataSource; //데이터베이스 정보
 	
 	// 관리자 페이지
 	@GetMapping("/master/sysManage")
@@ -100,8 +125,42 @@ public class MasterController {
 	
 	// 시스템 정보
 	@GetMapping("/master/systemInfo")
-	public void getSystemInfo() throws Exception {
+	public void getSystemInfo(MemberDTO member, HttpSession session, Model model) throws Exception {
+		System.out.println(servletContext.getServerInfo());
+		System.out.println(servletContext.getJspConfigDescriptor());
+		System.out.println(servletContext.getEffectiveMajorVersion());
+		System.out.println(servletContext.getEffectiveMinorVersion());
+		System.out.println(servletContext.getMajorVersion());
+		System.out.println(servletContext.getMinorVersion());
+		System.out.println("getServletContextName : " + servletContext.getServletContextName());
+		System.out.println("getVirtualServerName : " + servletContext.getVirtualServerName());
+		System.out.println("getClassLoader : " + servletContext.getClassLoader());
+		System.out.println("getDefaultSessionTrackingModes : " + servletContext.getDefaultSessionTrackingModes());
+		System.out.println("getEffectiveSessionTrackingModes : " + servletContext.getEffectiveSessionTrackingModes());
+		model.addAttribute("tomcat_apache", servletContext.getServerInfo());
+		model.addAttribute("current_application_name", servletContext.getServletContextName());
+		model.addAttribute("virtual_server_name", servletContext.getVirtualServerName());
 		
-		System.out.println();
+		Connection connection = dataSource.getConnection();
+        DatabaseMetaData metaData = connection.getMetaData();
+        String databaseProductName = metaData.getDatabaseProductName();
+        String databaseProductVersion = metaData.getDatabaseProductVersion();
+
+        model.addAttribute("database_Info",databaseProductName); //데이터베이스 정보
+        model.addAttribute("database_VersionInfo",databaseProductVersion); //데이터베이스 버전 정보
+	}
+	
+	@GetMapping("/master/boardManage")
+	public void getBoardManage() throws Exception {
+		
+	}
+	
+	@PostMapping("/master/boardManage")
+	public void postBoardManage(@RequestBody Map<String, String> map, HttpSession session) throws Exception {
+		System.out.println("postBoardManage");
+		if(map.get("size") != null) {
+            session.setMaxInactiveInterval(3600*24*7); //세션유지기간 = 한시간24시간7일
+            session.setAttribute("size", map.get("size"));
+        } 
 	}
 }

@@ -342,8 +342,8 @@ a:active { color: red; }
 }
 
 .bottom_menu > a:link, .bottom_menu > a:visited {
-	background-color: #FFA500;
-	color: maroon;
+	background-color: darksalmon;
+	color: white;
 	padding: 15px 25px;
 	text-align: center;
 	display: inline-block;
@@ -680,10 +680,11 @@ a:active { color: red; }
 }
 
 .bottom_menu > a:link, .bottom_menu > a:visited {
-	background-color: #FFA500;
+	background-color: darksalmon;
 	color: maroon;
 	padding: 15px 25px;
 	text-align: center;
+	color: white;
 	display: inline-block;
 	text-decoration: none;
 }
@@ -693,3 +694,61 @@ a:active { color: red; }
 	text-decoration: none;
 }
 
+.menubar {
+	width: 100%;
+	height: auto;
+	background-color: #168;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+}
+
+.menubar a {
+	display: block;
+	text-decoration: none;
+}
+
+.menubar .main_menu > li {
+	float: left;
+	width: 20%;
+	height: 100%;
+	line-height: 50px;
+	list-style: none;
+	font-weight: bold;
+	position: relative;
+	margin: 0px;
+}
+
+.menubar .main_menu > li > a:hover {
+	background-color: #f0f6f9;
+	color: #168;
+	font-weight: bold;
+}
+
+.menubar .main_menu .sub_menu {
+	list-style: none;
+	display: none;
+	position: absolute;
+	padding-left: 0;
+	padding-right: 0;
+	background-color: #c7d1db;
+	width: 100%;
+	box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.2);
+}
+
+.menubar .main_menu > li:hover .sub_menu {
+	display: block;
+}
+
+.sub_menu {
+	color: block;
+	padding: 8px;
+	text-decoration: none;
+	display: block;
+}
+
+.sub_menu a:hover {
+	background-color: #4675a4;
+}

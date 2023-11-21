@@ -55,9 +55,12 @@ public class BoardController {
 	// 게시물 목록 보기
 	@GetMapping("/board/list")
 	public void getList(Model model, @RequestParam("page") int pageNum, 
-			@RequestParam(name="keyword", defaultValue="", required=false) String keyword) throws Exception {
+			@RequestParam(name="keyword", defaultValue="", required=false) String keyword, 
+			HttpSession session) throws Exception {
 		
-		int postNum = 5; // 한 화면에 보여지는 게시물 행의 갯수
+		// int postNum = postNumfront; // 한 화면에 보여지는 게시물 행의 갯수
+		System.out.println("size" + session.getAttribute("size"));
+		int postNum = (session.getAttribute("size") == null )? 5 : Integer.parseInt((String)session.getAttribute("size"));
 		int startPoint = (pageNum-1)*postNum + 1; 
 		int endPoint = pageNum*postNum;
 		int pageListCount = 5; // 화면 하단에 보여지는 페이지리스트의 페이지 갯수

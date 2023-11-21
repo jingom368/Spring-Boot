@@ -5,7 +5,86 @@
     <title>게시물 내용 보기</title>
     <link href="/css/style.css" rel="stylesheet">
 
-
+<style>
+	.textArea {
+		display: flex;
+		justify-content: center;
+	}
+	
+	.replyDiv {
+	  width: 60%;
+	  height: 300px;
+	  margin: auto;
+	  text-align: left;
+	  background-color: #f7f7f7;
+	  border: 1px solid #ddd;
+	  padding: 20px;
+	  font-family: Arial, sans-serif;
+	  border-radius: 5px;
+	}
+	
+	#replyNotice {
+	  font-size: 20px;
+	  font-weight: bold;
+	  margin-bottom: 15px;
+	  color: #333;
+	}
+	
+	#replyForm {
+	  margin-bottom: 20px;
+	}
+	
+	#replyForm input[type="text"],
+	#replyForm textarea {
+	  width: 95%;
+	  padding: 10px;
+	  margin-bottom: 15px;
+	  border: 1px solid #ddd;
+	  border-radius: 3px;
+	  font-size: 14px;
+	  margin-top: 12px;
+	}
+	
+	#replycontent {
+	  height: 120px;
+	}
+	
+	#btn_reply,
+	#btn_cancel {
+	  background-color: darksalmon;
+	  color: white;
+	  border: none;
+	  padding: 12px 20px;
+	  margin-right: 10px;
+	  cursor: pointer;
+	  font-size: 14px;
+	  border-radius: 3px;
+	  transition: opacity 0.3s ease;
+	  margin-top: 20px;
+	}
+	
+	#btn_cancel {
+	  background-color: #f44336;
+	}
+	
+	#btn_reply:hover,
+	#btn_cancel:hover {
+	  opacity: 0.9;
+	}
+	
+	hr {
+	  margin-top: 20px;
+	  margin-bottom: 20px;
+	  border: none;
+	  border-top: 1px solid #ddd;
+	}
+	
+	#replyList {
+	  width: 90%;
+	  height: 600px;
+	  overflow: auto;
+	}
+</style>
 </head>
 
 <body>
@@ -14,7 +93,6 @@
 		if(userid=='') {
 			document.location.href='/';
 		}
-		window.onload="startupPage()";
 	</script>
 
     <div class="main">
@@ -23,11 +101,11 @@
         <br>
         
         <div class = "boardView">
-            <div class="items_v" th:text="'글쓴이 : ' + ${view.writer}"></div>
-   			<div class="items_v" th:text="'제목 : ' + ${view.title}"></div>
+            <div class="field" th:text="'글쓴이 : ' + ${view.writer}"></div>
+   			<div class="field" th:text="'제목 : ' + ${view.title}"></div>
             <!-- <div class="items_v">날짜 : ${view.regdate}</div> -->
-            <div class="items_v" th:text="${#temporals.format(view.regdate,'yyyy-MM-dd HH:mm:ss')}"></div>
-            <div class="textArea"><pre th:text="'내용 : ' + ${view.content}"></pre></div>
+            <div class="field" th:text="${#temporals.format(view.regdate,'yyyy-MM-dd HH:mm:ss')}"></div>
+            <div class="textArea"><pre class="input_content" th:text="'내용 : ' + ${view.content}"></pre></div>
 
 	        <div th:each="file:${fileInfoView}"  class="field">
 	        	파일명 : <a th:href="@{'/board/fileDownload?fileseqno=' + ${file.fileseqno}}"
@@ -87,6 +165,9 @@
 		var myDislikeCheck;
 		
 		window.onload = () => {
+			
+			startupPage();
+			
 			console.log('123')
 			var likeCnt = parseInt('[[${view.likecnt}]]');
 		 	var dislikeCnt = parseInt('[[${view.dislikecnt}]]');

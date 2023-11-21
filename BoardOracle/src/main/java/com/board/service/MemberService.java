@@ -1,6 +1,9 @@
 package com.board.service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.board.dto.AddressDTO;
 import com.board.dto.MemberDTO;
@@ -45,4 +48,7 @@ public interface MemberService {
 	
 	// 회원 정보 수정
 	public void memberInfoUpdate(MemberDTO member);
+	
+	// 30일 지나면 패스워드 변경 요청
+	public List<HashMap<String, Object>> PasswordChangeRequest(String userid);
 }

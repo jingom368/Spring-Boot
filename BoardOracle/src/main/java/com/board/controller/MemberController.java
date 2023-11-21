@@ -1,15 +1,19 @@
 package com.board.controller;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +38,7 @@ public class MemberController {
 	
 	@Autowired
 	BoardService boardService;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder pwdEncoder;
 	
@@ -98,7 +102,14 @@ public class MemberController {
 			service.lastlogindateUpdate(member);
 			
 			// 패스워드 확인 후 마지막 패스워드 변경일이 30일이 경과 되었을 경우 ...
-			// 최종 패스워드 변경일 + 변경취소 횟수 ...
+			// 최종 패스워드 변경일 * 변경취소 횟수 ...
+			int pwcheck = 0;
+			int result = 0;
+			List<HashMap<String, Object>> logInfo = service.PasswordChangeRequest(member.getUserid());
+			for (HashMap<String, Object> entry : logInfo) {
+				 pwcheck = ((BigDecimal) entry.get("pwcheck")).intValue();
+				 result = ((BigDecimal) entry.get("result")).intValue();
+			}
 			
 			// 세션 생성
 			session.setMaxInactiveInterval(3600*24*7); // 세션 유지 기간
@@ -106,16 +117,17 @@ public class MemberController {
 			session.setAttribute("username", service.memberInfo(member.getUserid()).getUsername());
 			session.setAttribute("role", service.memberInfo(member.getUserid()).getRole());
 			
+			if (result == 1) {
+				return "{\"message\":\"PWCHECK\",\"authkey\":\"" + member.getAuthkey() + "\"}";
+			} 
 			// return "redirect:/";
 			return "{\"message\":\"GOOD\",\"authkey\":\"" + member.getAuthkey() + "\"}";
 		}
-
 	}
 	
 	// 로그인 화면 보기
 	@GetMapping("/member/signup")
 	public void getSignup() {
-		
 	}
 	
 	
@@ -146,6 +158,7 @@ public class MemberController {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
 				String inputPassword = member.getPassword();
 				String pwd = pwdEncoder.encode(inputPassword); // 단방향 암호화
 				member.setPassword(pwd);
@@ -315,6 +328,8 @@ public class MemberController {
 		member.setUserid(userid);
 		member.setPassword(pwdEncoder.encode(new_password));
 		member.setLastpwdate(LocalDate.now());
+		int pwcheck = service.memberInfo(userid).getPwcheck();
+		member.setPwcheck(pwcheck+1);	
 		service.memberPasswordModify(member);
 		
 		return "{\"message\":\"GOOD\"}";

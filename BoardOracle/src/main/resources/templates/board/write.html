@@ -275,12 +275,12 @@
         <br>
         <div id="formZone">
             <form class="WriteForm" name="WriteForm" method="post">
-                <input type="text" id="writer" class="items" name="writer" th:value="|작성자 : ${session.username}|" th:disabled="disabled" />
-                <input type="text" id="title" class="items" name="title" placeholder="제목을 입력하세요">
+                <input type="text" id="writer" class="input_field" name="writer" th:value="|작성자 : ${session.username}|" th:disabled="disabled" />
+                <input type="text" id="title" class="input_field" name="title" placeholder="제목을 입력하세요">
                 <input type="hidden" name="userid" th:value="${session.userid}"> 
                 <input type="hidden" name="writer" th:value="${session.username}">
                 <br><br>
-                <textarea id="content" cols="100" rows="500" name="content" placeholder="내용을 입력하세요"></textarea>
+                <textarea id="content" cols="100" rows="500" class="input_content" name="content" placeholder="내용을 입력하세요"></textarea>
                 <div class="fileuploadForm">
            			<input type="file" id="inputFile" name="uploadFile" style="display:none" multiple>	
            			<div class="fileZone" id="fileZone">파일첨부를 하기 위해서는 클릭하거나 여기로 파일을 드래그 하세요<br>
