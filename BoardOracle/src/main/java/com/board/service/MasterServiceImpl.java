@@ -49,4 +49,10 @@ public class MasterServiceImpl implements MasterService {
 	public void fileDelete(int fileseqno) throws Exception {
 		mapper.fileDelete(fileseqno);
 	}
+	
+	// 직업, 성별 유저 수
+	@Override
+	public List<HashMap<String, Object>> countJobGenderMap() throws Exception {
+		return mapper.countJobGenderMap();
+	}
 }

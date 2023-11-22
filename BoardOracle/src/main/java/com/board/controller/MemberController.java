@@ -380,40 +380,45 @@ public class MemberController {
 	@PostMapping("/member/memberInfoModify")
 	public Map<String, String> postMemberInfoUpdate(HttpSession session, MemberDTO member, @RequestParam("fileUpload") MultipartFile multipartFile) throws Exception {
 
-			System.out.println("signup => good");
-			String path = "c:\\Repository\\profile\\";
-			File targetFile;
-			// 중요한 것!
-			if(!multipartFile.isEmpty()) {
+		String userid = (String)session.getAttribute("userid");
+		String username = (String)session.getAttribute("username");
+		System.out.println("signup => good");
+		String path = "c:\\Repository\\profile\\";
+		File targetFile;
+		// 중요한 것!
+		if(!multipartFile.isEmpty()) {
+			
+			String org_filename = multipartFile.getOriginalFilename();
+			String org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));
+			String stored_filename = UUID.randomUUID().toString().replaceAll("-","") + org_fileExtension;
+			
+			try {
+				targetFile = new File(path + stored_filename);
+				multipartFile.transferTo(targetFile);
 				
-				String org_filename = multipartFile.getOriginalFilename();
-				String org_fileExtension = org_filename.substring(org_filename.lastIndexOf("."));
-				String stored_filename = UUID.randomUUID().toString().replaceAll("-","") + org_fileExtension;
+				member.setOrg_filename(org_filename);
+				member.setStored_filename(stored_filename);
+				member.setFilesize(multipartFile.getSize());
 				
-				try {
-					targetFile = new File(path + stored_filename);
-					multipartFile.transferTo(targetFile);
-					
-					member.setOrg_filename(org_filename);
-					member.setStored_filename(stored_filename);
-					member.setFilesize(multipartFile.getSize());
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
-				String userid = (String)session.getAttribute("userid");
-				String username = (String)session.getAttribute("username");
-				member.setUserid(userid);
-				service.memberInfoUpdate(member);
-				// return "redirect:/board/list?page=1";
-				// return "{\"message\":\"GOOD\"}";
-				
-				Map<String,String> data = new HashMap<>(); data.put("message", "GOOD");
-				data.put("username", URLEncoder.encode(username, "UTF-8"));
-				 
-				return data;
-				
-				// return "{\"message\":\"GOOD\",\"username\":\"" + URLEncoder.encode(member.getUsername(), "UTF-8") + "\"}";
+		} else {
+			member.setOrg_filename(service.memberInfo(userid).getOrg_filename());
+			member.setStored_filename(service.memberInfo(userid).getStored_filename());
+			member.setFilesize(service.memberInfo(userid).getFilesize());
+		}
+
+			member.setUserid(userid);
+			service.memberInfoUpdate(member);
+			// return "redirect:/board/list?page=1";
+			// return "{\"message\":\"GOOD\"}";
+			
+			Map<String,String> data = new HashMap<>(); data.put("message", "GOOD");
+			data.put("username", URLEncoder.encode(username, "UTF-8"));
+			 
+			return data;
+			
+			// return "{\"message\":\"GOOD\",\"username\":\"" + URLEncoder.encode(member.getUsername(), "UTF-8") + "\"}";
 	}
 }

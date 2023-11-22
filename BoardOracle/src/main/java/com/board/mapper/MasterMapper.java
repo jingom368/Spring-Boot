@@ -26,4 +26,7 @@ public interface MasterMapper {
 	
 	// 파일 삭제
 	public void fileDelete(int fileseqno) throws Exception;
+	
+	// 직업, 성별 유저 수
+	public List<HashMap<String, Object>> countJobGenderMap() throws Exception;
 }

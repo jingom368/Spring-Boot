@@ -89,7 +89,8 @@ public class MasterController {
 	@GetMapping("/master/memberCount")
 	public void getMemberCount(Model model) throws Exception {
 		
-		model.addAttribute("memberCount", service.memberCount());
+		List<HashMap<String, Object>> memberCount = service.countJobGenderMap();
+		model.addAttribute("memberCount", memberCount);
 	}
 	
 	// 파일 수정 리스트 보여주기

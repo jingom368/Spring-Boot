@@ -14,7 +14,7 @@
 		}
 	</script>
 	<div class="main">
-		<h1>회원 등록</h1><br>
+		<h1 class="title">회원 등록</h1><br>
 		
 		<div th:each="memberInfo:${memberInfo}" class="WriteForm">
 		
@@ -26,7 +26,7 @@
 				<span>이미지 수정을 원하시면 화면을 클릭해 주세요.</span></div>
 				
 				<span id="idCheckNotice"></span>
-				<div style="width:90%; text-align:left; position:relative; left: 35px; border-bottom: 2px solid #adadad; margin: 10px; padding:10px;">
+				<div style="width:90%; text-align:left; position:relative; left: 35px; border-bottom: 2px solid #F5B27F; margin: 10px; padding:10px;">
 					성별 : 
 					<label><input type="radio" name="gender" value="남성">남성</label>
 					<label><input type="radio" name="gender" value="여성">여성</label><br>
@@ -54,8 +54,8 @@
 				<input type="text" id="email" class="input_field" name="email" placeholder="이메일 주소를 입력하세요.">
 				<textarea class="input_content" id="description" cols="100" rows="500" name="description" placeholder="자기 소개를 입력해 주세요">
 				</textarea><br>
-				<input type="button" id="btnRegister" class="btn_write" value="수정" onclick="MemberInfoModify()"><br><br>
-				<input type="button" class="btn_cancle" value="취소" onclick="history.back()">
+				<input type="button" id="btnRegister" class="btn_write" value="수정" onclick="MemberInfoModify()">
+				<input type="button" class="btn_cancel" value="취소" onclick="history.back()">
  			</form>
 		</div>
 	</div>
@@ -141,10 +141,10 @@
    			btnRegister.addEventListener('click', () => {
    				
    				// 유효성 검사
-   				if(imgCheck == 'N') {
-   					alert('프로필 이미지를 등록하세요');
-   					return false;
-   				}
+   				// if(imgCheck == 'N') {
+   				//	alert('프로필 이미지를 등록하세요');
+   				//	return false;
+   				// }
    				
    				// const gender = document.querySelectorAll('input[name=gender]:checked');
    				const gender = document.getElementsByName('gender');
@@ -186,10 +186,10 @@
  	   				return false;
  	   			}
    				
-   				if(addr2.value == '') {
-   					alert('상세 주소를 입력하세요');
-   					addr2.focus();
-   					return false;
+   				if(addr1.value=='' && addr2.value == '') {
+   				 	alert('상세 주소를 입력하세요');
+   				 	addr2.focus();
+   				 	return false;
    				}
    				
    				address.value = addr1.value + " " + addr2.value;
