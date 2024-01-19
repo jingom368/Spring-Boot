@@ -17,8 +17,8 @@
 · 같은 기능을 가진 게시판을 4가지 다른 환경에서 구축하면서, 각각의 기술과 환경이 프로젝트에 어떠한 영향을 미치는지, 그리고 이를 어떻게 적용해야 하는지에 대해 이해했습니다.
 1) Window 환경에서 Spring JSP/Servlet, JDBC, Oracle, Apache Tomcat9, Apache로 게시판 구현 및 배포
 2) Linux 환경에서 Spring Framework, HTML5/CSS3/Javascript, Maven, MyBatis, MariaDB, Cookie/Session, Tomcat9, Apache로 게시판 구현 및 배포
-3) Linux 환경에서 Spring Boot/Security/Thymeleaf HTML5/CSS3/Javascript, Gradle, MyBatis, MariaDB, Cookie/Session, OAuth2, Apache Tomcat10, Docker, Docker Compose로 게시판 구현 및 배포
-4) Window 환경에서 Spring Boot/Security/JPA, React, Gradle, Oracle, Cookie/Session, OAuth2, JWT, Apache Tomcat10, Docker, Kubernetes, Jenkins로 게시판 구현 및 배포
+3) Window 환경에서 Spring Boot/Security/Thymeleaf HTML5/CSS3/Javascript, Gradle, MyBatis, MariaDB, Cookie/Session, OAuth2, Apache Tomcat10, Docker, Docker Compose로 게시판 구현 및 배포
+4) Linux 환경에서 Spring Boot/Security/JPA, React, Gradle, Oracle, Cookie/Session, OAuth2, JWT, Apache Tomcat10, Docker, Kubernetes, Jenkins로 게시판 구현 및 배포
 
 
 <h2>프로젝트 아키텍처 및 기술 스택</h2>
