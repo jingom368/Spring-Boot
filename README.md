@@ -34,4 +34,4 @@
          · WAS : Apache Tomcat 10(Spring Boot 내장)
          · DBMS : ORACLE, MariaDB, MyBatis, Hibernate JPA
          · 보안, 인증 : Cookie / Session / OAuth2, JWT
-      · 배포 : Docker & Kubernetes
+      · 배포 : Docker & Kubernetes & Jenkins
